@@ -1,11 +1,11 @@
 package com.example.demo.security;
 
-import org.apache.catalina.filters.CorsFilter;
-import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -15,47 +15,47 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.example.demo.security.jwt.JwtAuthenticationFilter;
 import com.example.demo.security.jwt.JwtAuthorizationFilter;
 import com.example.demo.security.jwt.JwtProperties;
 import com.example.demo.security.jwt.JwtTokenProvider;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-@Configuration
+@Configuration // 빈 등록
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함
-@RequiredArgsConstructor
+@RequiredArgsConstructor // final이 붙거나 @NotNull 이 붙은 필드의 생성자 생성
+// @AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자 생성
+@EnableMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화
 public class WebSecurityConfig {
-        // WebSecurityConfigurerAdapter을 상속받아 configure 재정의 -> SecurityFilterChain과
-        // WebSecurityCustomizer을 Bean으로 등록
-
-        // @Autowired
-        // @Lazy
-        // private JwtExceptionFilter jwtExceptionFilter;
-
-        private AuthenticationManager authenticationManager;
+        // WebSecurityConfigurerAdapter을 상속받아 configure 재정의
+        // -> SecurityFilterChain과 WebSecurityCustomizer을 Bean으로 등록
 
         private final CorsFilter corsFilter;
         private final JwtTokenProvider jwtTokenProvider;
 
         @Bean
-        public AuthenticationManager authenticationManager(
-                        AuthenticationConfiguration authenticationConfiguration) throws Exception {
-                return authenticationConfiguration.getAuthenticationManager();
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+            return authenticationConfiguration.getAuthenticationManager();
         }
-
+       
         // antMatchers("/url")는 정확한 URL만, mvcMatchers("/url")는 url/ and url.~까지 허용
         @Bean
         public WebSecurityCustomizer webSecurityCustomizer() {
                 return (web) -> web.ignoring()
                                 // .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 자원에 대해서 Security를 적용하지 않음으로 설정
-                                .antMatchers("/h2-console/**");
+                                // .antMatchers("/h2-console/**");
+
+                                .requestMatchers(PathRequest.toH2Console())
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 
         }
 
         @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManagera, AuthenticationManager authenticationManager) throws Exception {
                 http
                                 .csrf().disable()
                                 // .exceptionHandling().authenticationEntryPoint(unauthorizedHandler) // 인증예외처리
