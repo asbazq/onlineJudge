@@ -5,16 +5,17 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.demo.dto.AllQuestionResponseDto;
 import com.example.demo.dto.QuestionRequestDto;
 import com.example.demo.dto.QuestionResponseDto;
 import com.example.demo.service.QuestionService;
+import com.example.demo.dto.IORequestDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,12 +23,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuestionController {
 
-    private QuestionService questionService;
+    private final QuestionService questionService;
 
     // 문제 작성
     @PostMapping("api/question")
-    public ResponseEntity<Void> createQuestion(@ModelAttribute QuestionRequestDto requestDto) {
+    public ResponseEntity<Void> createQuestion(@RequestBody QuestionRequestDto requestDto) {
         questionService.createQuestion(requestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    // 입출력 작성
+    @PostMapping("api/questionio/{id}")
+    public ResponseEntity<Void> putio(@PathVariable("id") Long questionId, @RequestBody IORequestDto requestDto) {
+        questionService.putio(questionId, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }

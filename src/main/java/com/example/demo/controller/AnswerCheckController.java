@@ -19,14 +19,9 @@ public class AnswerCheckController {
     private AnswerCheckService answerCheckService;
 
     @PostMapping("api/question/input")
-    public ResponseEntity<Void> inputQuestion(@RequestBody InputRequestDto requestDto, Long questionId) {
-        answerCheckService.inputQuestion(requestDto, questionId);
+    public ResponseEntity<String> submission(@RequestBody InputRequestDto requestDto, Long questionId, String lang) {
+        answerCheckService.submission(requestDto, questionId, lang);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
-
-    @GetMapping("greeting")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.status(HttpStatus.OK).body("hello world");
     }
 }

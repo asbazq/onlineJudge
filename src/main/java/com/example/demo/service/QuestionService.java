@@ -8,11 +8,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Exception.CustomException;
+import com.example.demo.Exception.ErrorCode;
 import com.example.demo.dto.AllQuestionResponseDto;
 import com.example.demo.dto.QuestionRequestDto;
 import com.example.demo.dto.QuestionResponseDto;
+import com.example.demo.dto.IORequestDto;
 import com.example.demo.model.Question;
 import com.example.demo.reposotory.QuestionRepository;
+import com.example.demo.reposotory.InputOutputRepository;
+import com.example.demo.model.InputOutput;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +25,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor // final이 붙거나 @NotNull 이 붙은 필드의 생성자를 자동 생성
 public class QuestionService {
 
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
+    private final InputOutputRepository inputOutputRepository;
 
     // 문제 작성
     public void createQuestion(QuestionRequestDto requestDto) {
@@ -30,6 +36,21 @@ public class QuestionService {
                 .build();
 
         questionRepository.save(question);
+    }
+
+    // 입출력 작성
+    public void putio(Long questionId, IORequestDto requestDto) {
+
+        Question qusetion = questionRepository.findById(questionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        InputOutput inputOutput = InputOutput.builder()
+                .queId(qusetion.getId())
+                .input(requestDto.getInput())
+                .output(requestDto.getOutput())
+                .build();
+
+        inputOutputRepository.save(inputOutput);
     }
 
     // 문제 상세 조회
