@@ -10,7 +10,6 @@ public class QuestionResponseDto {
     private String title;
     private String content;
     private int likeCnt;
-    private int TCCnt;
     private String img;
 
     public QuestionResponseDto(Question question) {
@@ -18,6 +17,5 @@ public class QuestionResponseDto {
         this.title = question.getTitle();
         this.content = question.getContent();
         this.likeCnt = question.getLikeCnt();
-        this.TCCnt = question.getTCCnt();
     }
 }

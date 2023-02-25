@@ -11,13 +11,12 @@ import com.example.demo.reposotory.UsersRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+    private final UsersRepository usersRepository;
 
     @Autowired
     public UserDetailsServiceImpl(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
-
-    private final UsersRepository usersRepository;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users users = usersRepository.findByUsername(username)

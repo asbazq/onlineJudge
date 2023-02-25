@@ -22,7 +22,6 @@ import com.example.demo.security.jwt.JwtAuthorizationFilter;
 import com.example.demo.security.jwt.JwtProperties;
 import com.example.demo.security.jwt.JwtTokenProvider;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Configuration // 빈 등록
@@ -49,7 +48,7 @@ public class WebSecurityConfig {
                                 // .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 자원에 대해서 Security를 적용하지 않음으로 설정
                                 // .antMatchers("/h2-console/**");
 
-                                .requestMatchers(PathRequest.toH2Console())
+                                // .requestMatchers(PathRequest.toH2Console())
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 
         }

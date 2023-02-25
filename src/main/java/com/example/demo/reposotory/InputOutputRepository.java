@@ -1,0 +1,12 @@
+package com.example.demo.reposotory;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.demo.model.InputOutput;
+
+
+public interface InputOutputRepository extends JpaRepository<InputOutput, Long> {
+    Optional<InputOutput> findById(Long id);
+}

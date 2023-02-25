@@ -1,6 +1,3 @@
-
-
-
 package com.example.demo.security.jwt;
 
 import java.util.Base64;
@@ -62,14 +59,13 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(userPk);
         Date now = new Date();
         String token = Jwts.builder()
-                .setClaims(claims)//정보저장
+                .setClaims(claims)// 정보저장
                 .claim("userId", userId)
-                .setIssuedAt(now)//토큰 발행 시간 정보
+                .setIssuedAt(now)// 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + ACCESS_EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256, secretKey)//사용할 암호화 알고리즘
-                //signature에 들어갈 secret값 세팅
+                .signWith(SignatureAlgorithm.HS256, secretKey)// 사용할 암호화 알고리즘
+                // signature에 들어갈 secret값 세팅
                 .compact();
-
 
         response.addHeader(HEADER_ACCESS, TOKEN_PREFIX + token);
         return token;
@@ -79,13 +75,13 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(userPk);
         Date now = new Date();
         String refreshToken = Jwts.builder()
-                .setClaims(claims)//정보저장
+                .setClaims(claims)// 정보저장
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + REFRESH_EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
-//        response.addHeader("RefreshToken","Bearer " + refreshToken);
+        // response.addHeader("RefreshToken","Bearer " + refreshToken);
         return refreshToken;
     }
 
@@ -157,10 +153,10 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    //Request의 Header에서 token 값을 가져옴
-    //"X-AUTH-TOKEN":"TOKEN 값"
+    // Request의 Header에서 token 값을 가져옴
+    // "X-AUTH-TOKEN":"TOKEN 값"
     public String resolveToken(HttpServletRequest request) {
-//        return request.getHeader("Authorization");
+        // return request.getHeader("Authorization");
         return request.getHeader("AccessToken");
     }
 

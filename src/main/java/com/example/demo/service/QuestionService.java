@@ -17,7 +17,7 @@ import com.example.demo.reposotory.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor // final이 붙거나 @NotNull 이 붙은 필드의 생성자를 자동 생성
 public class QuestionService {
 
     private QuestionRepository questionRepository;
@@ -46,7 +46,7 @@ public class QuestionService {
         Sort.Direction direction = Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortby);
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-        Page<Question> questionPage = questionRepository.findAllBy(pageRequest);
+        Page<Question> questionPage = questionRepository.findAll(pageRequest);
 
         List<AllQuestionResponseDto> questionResponseDtos = new ArrayList<>();
 
