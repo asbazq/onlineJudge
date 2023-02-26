@@ -19,12 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 // 인가
 // Security Filter 의 BasicAuthenticationFilter 는 상시 실행되나
 // 권한이나 인증이 필요한 주소를 요청했을 때 token 의 유무를 검사
-@Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         super(authenticationManager);
         this.jwtTokenProvider = jwtTokenProvider;

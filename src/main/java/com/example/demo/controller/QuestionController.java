@@ -34,8 +34,8 @@ public class QuestionController {
     }
 
     // 입출력 작성
-    @PostMapping("api/questionio/{id}")
-    public ResponseEntity<Void> putio(@PathVariable("id") Long questionId, @RequestBody IORequestDto requestDto) {
+    @PostMapping("api/questionio/{questionId}")
+    public ResponseEntity<Void> putio(@PathVariable Long questionId, @RequestBody IORequestDto requestDto) {
         questionService.putio(questionId, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -57,6 +57,11 @@ public class QuestionController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(dtos);
+    }
+
+    @GetMapping("test")
+    public String test() {
+        return "hello";
     }
 
 }

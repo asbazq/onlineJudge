@@ -25,8 +25,7 @@ public class AnswerCheckService {
     private final QuestionRepository questionRepository;
     private final InputOutputRepository inputOutputRepository;
 
-    public String submission(InputRequestDto requestDto, Long questionId, String lang) {
-        
+    public String submission(InputRequestDto requestDto, Long questionId) {
 
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
@@ -36,8 +35,7 @@ public class AnswerCheckService {
 
         String userCode = requestDto.getInput();
         String fileName = Integer.toString(userCode.hashCode());
-        // File userFile = new File("/temp/_" + fileName + "." + lang); String.format으로 변경할 것
-        String filePath = String.format("/temp/_%s.%s", fileName, lang);
+        String filePath = String.format("/home/ubuntu/onlineJudge/temp/_%s.%s", fileName, requestDto.getLang());
         File userFile = new File(filePath);
         String langFile = "";
         StringBuilder sb = new StringBuilder();
@@ -52,6 +50,7 @@ public class AnswerCheckService {
         DBinput = sb.toString();
 
         // Create the file
+        System.out.println("Create the file");
         try {
             userFile.createNewFile();
         } catch (Exception e) {
@@ -59,25 +58,49 @@ public class AnswerCheckService {
         }
 
         // Check program language
-        if (lang.equals("java")) {
+        System.out.println("Check program language");
+        if (requestDto.getLang().equals("java")) {
             langFile = "javac.sh";
-        } else if (lang.equals("python")) {
+        } else if (requestDto.getLang().equals("python")) {
             langFile = "pyconverter.sh";
-        } else if (lang.equals("c")) {
+        } else if (requestDto.getLang().equals("c")) {
             langFile = "cconverter.sh";
         } else {
             langFile = "cppconverter.sh";
         }
 
         try {
+            // chmod the file
+            System.out.println("chmod the file");
+            ProcessBuilder chmodpb = new ProcessBuilder("chmod", "u+x,o+x", userFile.getAbsolutePath());
+            // start the chmodpb process
+            System.out.println("start the chmodpb process");
+            Process chmodprocess = chmodpb.start();
+            int exitValue = chmodprocess.waitFor();
+
+            // Wait for the chmod process to complete and check the exit value
+            System.out.println("Wait for the chmod process to complete and check the exit value");
+            if (exitValue != 0) {
+                System.out.println("Command exited with error code: " + exitValue);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
             // Build the command as a list of strings
-            ProcessBuilder pb = new ProcessBuilder("./", langFile, filePath, DBinput);
+            System.out.println("Build the command as a list of strings");
+            // ProcessBuilder pb = new ProcessBuilder("./", langFile, filePath, DBinput);
+            ProcessBuilder pb = new ProcessBuilder("./"+langFile, userFile.getAbsolutePath(), DBinput);
+
             pb.redirectErrorStream(true);
 
             // Start the process
+            System.out.println("Start the process");
             Process process = pb.start();
 
             // Read the output from the process
+            System.out.println("Read the output from the process");
             InputStream inputStream = process.getInputStream();
             InputStream stderr = process.getErrorStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -93,7 +116,7 @@ public class AnswerCheckService {
                 answwer = inputOutput.getOutput();
                 isPassed = true;
                 while ((line = reader.readLine()) != null) {
-                    index ++;
+                    index++;
                     if (!answwer.get(index).equals(line)) {
                         isPassed = false;
                         break;
@@ -102,6 +125,7 @@ public class AnswerCheckService {
             }
 
             // Wait for the process to complete and check the exit value
+            System.out.println("Wait for the process to complete and check the exit value");
             int exitValue = process.waitFor();
             if (exitValue != 0) {
                 System.out.println("Command exited with error code: " + exitValue);

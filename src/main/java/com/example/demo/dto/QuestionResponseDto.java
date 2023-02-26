@@ -16,6 +16,5 @@ public class QuestionResponseDto {
         this.questionId = question.getId();
         this.title = question.getTitle();
         this.content = question.getContent();
-        this.likeCnt = question.getLikeCnt();
     }
 }

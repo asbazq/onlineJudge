@@ -11,9 +11,8 @@ import com.example.demo.reposotory.UsersRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UsersRepository usersRepository;
+    private final UsersRepository usersRepository; // 컴포지션
 
-    @Autowired
     public UserDetailsServiceImpl(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
