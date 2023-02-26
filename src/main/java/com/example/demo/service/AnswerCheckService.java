@@ -34,6 +34,7 @@ public class AnswerCheckService {
                 .orElseThrow(() -> new CustomException(ErrorCode.EMPTY_CONTENT));
 
         String userCode = requestDto.getInput();
+        System.out.println(userCode);
         String fileName = Integer.toString(userCode.hashCode());
         String filePath = String.format("/home/ubuntu/onlineJudge/temp/_%s.%s", fileName, requestDto.getLang());
         File userFile = new File(filePath);
@@ -43,11 +44,12 @@ public class AnswerCheckService {
         boolean isPassed = false;
         StringBuilder errorLog = new StringBuilder();
 
-        for (int i = 0; i < inputOutput.getOutput().size(); i++) {
-            sb.append(inputOutput.getOutput().get(i));
+        for (int i = 0; i < inputOutput.getInput().size(); i++) {
+            sb.append(inputOutput.getInput().get(i));
         }
 
         DBinput = sb.toString();
+        System.out.println(DBinput);
 
         // Create the file
         System.out.println("Create the file");
