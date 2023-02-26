@@ -118,11 +118,11 @@ public class AnswerCheckService {
                 answwer = inputOutput.getOutput();
                 isPassed = true;
                 while ((line = reader.readLine()) != null) {
-                    index++;
                     if (!answwer.get(index).equals(line)) {
                         isPassed = false;
                         break;
                     }
+                    index++;
                 }
             }
 
