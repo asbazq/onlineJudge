@@ -34,13 +34,15 @@ public class AnswerCheckService {
                 .orElseThrow(() -> new CustomException(ErrorCode.EMPTY_CONTENT));
 
         String userCode = requestDto.getInput();
-        System.out.println(userCode);
-        String fileName = Integer.toString(userCode.hashCode());
-        String filePath = String.format("/home/ubuntu/onlineJudge/temp/_%s.%s", fileName, requestDto.getLang());
+        System.out.println("userCode : " + userCode);
+        // String fileName = Integer.toString(userCode.hashCode());
+        String fileName = "Main";
+        String filePath = String.format("/home/ubuntu/onlineJudge/temp/%s.%s", fileName, requestDto.getLang());
         File userFile = new File(filePath);
         String langFile = "";
         StringBuilder sb = new StringBuilder();
         String DBinput = "";
+
         boolean isPassed = false;
         StringBuilder errorLog = new StringBuilder();
 
@@ -49,12 +51,16 @@ public class AnswerCheckService {
         }
 
         DBinput = sb.toString();
-        System.out.println(DBinput);
+        System.out.println("DBinput : " + DBinput);
 
         // Create the file
         System.out.println("Create the file");
         try {
             userFile.createNewFile();
+            FileWriter fw = new FileWriter(userFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(userCode);
+            bw.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,7 +80,7 @@ public class AnswerCheckService {
         try {
             // chmod the file
             System.out.println("chmod the file");
-            ProcessBuilder chmodpb = new ProcessBuilder("chmod", "u+x,o+x", userFile.getAbsolutePath());
+            ProcessBuilder chmodpb = new ProcessBuilder("chmod", "uo+wx", userFile.getAbsolutePath());
             // start the chmodpb process
             System.out.println("start the chmodpb process");
             Process chmodprocess = chmodpb.start();
@@ -92,8 +98,8 @@ public class AnswerCheckService {
         try {
             // Build the command as a list of strings
             System.out.println("Build the command as a list of strings");
-            // ProcessBuilder pb = new ProcessBuilder("./", langFile, filePath, DBinput);
-            ProcessBuilder pb = new ProcessBuilder("./"+langFile, userFile.getAbsolutePath(), DBinput);
+            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/"+langFile, userFile.getAbsolutePath(), DBinput);
+            pb.directory(new File("/home/ubuntu/"));
 
             pb.redirectErrorStream(true);
 
@@ -108,17 +114,23 @@ public class AnswerCheckService {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             BufferedReader errReader = new BufferedReader(new InputStreamReader(stderr));
             String line = "";
-            List<String> answwer = new ArrayList<>();
+            List<String> answer = new ArrayList<>();
+
             while ((line = errReader.readLine()) != null) {
                 errorLog.append(line).append("\n");
+                System.out.println("line : " +line);
             }
 
             if (errorLog.length() == 0) {
                 int index = 0;
-                answwer = inputOutput.getOutput();
+                answer = inputOutput.getOutput();
                 isPassed = true;
                 while ((line = reader.readLine()) != null) {
-                    if (!answwer.get(index).equals(line)) {
+                    System.out.println("line : " +line);
+                    errorLog.append(line).append("\n");
+                    if (!answer.get(index).equals(line)) {
+                        System.out.println("answer : "+answer);
+                        System.out.println("line : "+line);
                         isPassed = false;
                         break;
                     }
@@ -139,10 +151,12 @@ public class AnswerCheckService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         if (isPassed) {
             return "Test Succes";
         }
+
         // send above errorlog to user.
-        return "Test Failed" + errorLog.toString();
+        return "Test Failed " + errorLog.toString();
     }
 }
