@@ -18,6 +18,7 @@ public class AnswerCheckController {
 
     private final AnswerCheckService answerCheckService;
 
+    // 클라이언트 정답 제출
     @PostMapping("api/question/submission/{questionId}")
     public ResponseEntity<String> submission(@RequestBody InputRequestDto requestDto, @PathVariable Long questionId) {
         String result = answerCheckService.submission(requestDto, questionId);

@@ -46,7 +46,7 @@ public class AnswerCheckService {
         StringBuilder errorLog = new StringBuilder();
 
         for (int i = 0; i < inputOutput.size(); i++) {
-            sb.append(inputOutput.get(i));
+            sb.append(inputOutput.get(i).toString());
         }
 
         DBinput = sb.toString();
