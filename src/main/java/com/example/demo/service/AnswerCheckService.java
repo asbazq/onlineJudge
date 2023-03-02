@@ -30,8 +30,7 @@ public class AnswerCheckService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        InputOutput inputOutput = inputOutputRepository.findById(question.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.EMPTY_CONTENT));
+        List<InputOutput> inputOutput = inputOutputRepository.findByQueId(question.getId());
 
         String userCode = requestDto.getInput();
         System.out.println("userCode : " + userCode);
@@ -46,8 +45,8 @@ public class AnswerCheckService {
         boolean isPassed = false;
         StringBuilder errorLog = new StringBuilder();
 
-        for (int i = 0; i < inputOutput.getInput().size(); i++) {
-            sb.append(inputOutput.getInput().get(i));
+        for (int i = 0; i < inputOutput.size(); i++) {
+            sb.append(inputOutput.get(i));
         }
 
         DBinput = sb.toString();
@@ -116,6 +115,10 @@ public class AnswerCheckService {
             String line = "";
             List<String> answer = new ArrayList<>();
 
+            for (int i = 0; i < inputOutput.size(); i++) {
+                answer.add(inputOutput.get(i).getOutput().toString());
+            }
+
             while ((line = errReader.readLine()) != null) {
                 errorLog.append(line).append("\n");
                 System.out.println("line : " +line);
@@ -123,7 +126,6 @@ public class AnswerCheckService {
 
             if (errorLog.length() == 0) {
                 int index = 0;
-                answer = inputOutput.getOutput();
                 isPassed = true;
                 while ((line = reader.readLine()) != null) {
                     System.out.println("line : " +line);
