@@ -9,8 +9,6 @@ public class QuestionResponseDto {
     private Long questionId;
     private String title;
     private String content;
-    private int likeCnt;
-    private String img;
 
     public QuestionResponseDto(Question question) {
         this.questionId = question.getId();

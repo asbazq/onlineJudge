@@ -8,7 +8,6 @@ import lombok.Getter;
 public class AllQuestionResponseDto {
     private Long questionId;
     private String title;
-    private int likeCnt;
     // private String img;
 
     public AllQuestionResponseDto(Question question) {

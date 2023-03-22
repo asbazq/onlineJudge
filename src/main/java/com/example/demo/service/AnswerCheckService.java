@@ -37,23 +37,27 @@ public class AnswerCheckService {
         // String fileName = Integer.toString(userCode.hashCode());
         String fileName = "Main";
         String filePath = String.format("/home/ubuntu/onlineJudge/temp/%s.%s", fileName, requestDto.getLang());
+        String DBfilePath = String.format("/home/ubuntu/onlineJudge/temp/%s.%s", "DBfile", "txt");
         File userFile = new File(filePath);
+        File DBfile = new File(DBfilePath);
         String langFile = "";
-        StringBuilder sb = new StringBuilder();
+        // StringBuilder sb = new StringBuilder();
         String DBinput = "";
+        StringBuffer sb = new StringBuffer();
 
         boolean isPassed = false;
         StringBuilder errorLog = new StringBuilder();
 
         for (int i = 0; i < inputOutput.size(); i++) {
-            sb.append(inputOutput.get(i).toString());
+            sb.append(inputOutput.get(i).getInput()).append("\n");
         }
 
         DBinput = sb.toString();
+   
         System.out.println("DBinput : " + DBinput);
 
-        // Create the file
-        System.out.println("Create the file");
+        // Create the userfile
+        System.out.println("Create the userfile");
         try {
             userFile.createNewFile();
             FileWriter fw = new FileWriter(userFile);
@@ -63,6 +67,18 @@ public class AnswerCheckService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+         // Create the DBfile
+         System.out.println("Create the DBfile");
+         try {
+             DBfile.createNewFile();
+             FileWriter fw = new FileWriter(DBfile);
+             BufferedWriter bw = new BufferedWriter(fw);
+             bw.write(DBinput);
+             bw.close();
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
 
         // Check program language
         System.out.println("Check program language");
@@ -78,8 +94,26 @@ public class AnswerCheckService {
 
         try {
             // chmod the file
-            System.out.println("chmod the file");
+            System.out.println("chmod the userfile");
             ProcessBuilder chmodpb = new ProcessBuilder("chmod", "uo+wx", userFile.getAbsolutePath());
+            // start the chmodpb process
+            System.out.println("start the chmodpb process");
+            Process chmodprocess = chmodpb.start();
+            int exitValue = chmodprocess.waitFor();
+
+            // Wait for the chmod process to complete and check the exit value
+            System.out.println("Wait for the chmod process to complete and check the exit value");
+            if (exitValue != 0) {
+                System.out.println("Command exited with error code: " + exitValue);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            // chmod the file
+            System.out.println("chmod the DBfile");
+            ProcessBuilder chmodpb = new ProcessBuilder("chmod", "uo+wx", DBfile.getAbsolutePath());
             // start the chmodpb process
             System.out.println("start the chmodpb process");
             Process chmodprocess = chmodpb.start();
@@ -97,7 +131,7 @@ public class AnswerCheckService {
         try {
             // Build the command as a list of strings
             System.out.println("Build the command as a list of strings");
-            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/"+langFile, userFile.getAbsolutePath(), DBinput);
+            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/"+langFile, userFile.getAbsolutePath(), DBfile.getAbsolutePath());
             pb.directory(new File("/home/ubuntu/"));
 
             pb.redirectErrorStream(true);
