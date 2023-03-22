@@ -44,5 +44,6 @@ public class InputOutput {
     @Column
     @ElementCollection
     private List<String> output;
+
     
 }
