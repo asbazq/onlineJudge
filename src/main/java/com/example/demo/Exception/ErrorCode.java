@@ -30,8 +30,9 @@ public enum ErrorCode {
 
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 카테고리를 찾을 수 없습니다"),
 
-    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 채팅방을 찾을 수 없습니다"),
     AUTH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "로그인이 필요한 서비스입니다"),
+
+    LANGUAGE_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 언어를 찾을 수 없습니다."),
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_USERNAME(HttpStatus.CONFLICT, "중복된 사용자명이 존재합니다"),
     /*유저의 이름을 4자이상으로 만들어주세요 */
