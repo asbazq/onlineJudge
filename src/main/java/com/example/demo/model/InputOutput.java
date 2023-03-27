@@ -1,18 +1,22 @@
 package com.example.demo.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,27 +27,25 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Builder
-public class InputOutput {
+public class InputOutput implements Serializable { // 영속성 컨텍스트는 엔티티의 PK를 사용해서 엔티티를 관리, 그러나 pk가 아닌 unique필드를 사용하기 때문에 직렬화
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id", unique = false)
     private Question question;
 
-    @Column
-    private Long queId;
-
-    @Column
+    @Column(name = "input")
     @ElementCollection
-    private List<String> input;
+    @CollectionTable(name = "input_value", joinColumns = @JoinColumn(name = "question_id", referencedColumnName = "question_id"))
+    private List<String> inputs = new ArrayList<>();
 
-    @Column
+    @Column(name = "output")
     @ElementCollection
-    private List<String> output;
+    @CollectionTable(name = "output_value", joinColumns = @JoinColumn(name = "question_id", referencedColumnName = "question_id"))
+    private List<String> outputs = new ArrayList<>();
 
     
 }

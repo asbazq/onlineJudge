@@ -5,9 +5,11 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -34,15 +36,13 @@ public class Question extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "question")
-    private List<InputOutput> inputOutput;
+    @OneToMany(mappedBy = "question", orphanRemoval = true)
+    @Builder.Default
+    private List<InputOutput> inputOutputs = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "users_id")
     private Users users;
-
-    @Builder.Default // @Builder 는 초기화를 무시, 초기화를 위해 @Builder.Default or final
-    @OneToMany(mappedBy = "question")
-    private List<TestCase> testCases = new ArrayList<>();
 
     public Question(Long id, String title, String content, Users users) {
         this.id = id;
