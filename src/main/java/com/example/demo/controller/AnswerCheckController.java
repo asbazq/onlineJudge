@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.sql.SQLException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +22,7 @@ public class AnswerCheckController {
 
     // 클라이언트 정답 제출
     @PostMapping("api/question/submission/{questionId}")
-    public ResponseEntity<String> submission(@RequestBody InputRequestDto requestDto, @PathVariable Long questionId) {
+    public ResponseEntity<String> submission(@RequestBody InputRequestDto requestDto, @PathVariable Long questionId) throws SQLException {
         String result = answerCheckService.submission(requestDto, questionId);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
