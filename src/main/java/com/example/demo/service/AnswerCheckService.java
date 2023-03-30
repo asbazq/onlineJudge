@@ -13,7 +13,6 @@ import com.example.demo.repository.InputOutputRepository;
 import com.example.demo.repository.QuestionRepository;
 
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class AnswerCheckService {
     private final QuestionRepository questionRepository;
     private final InputOutputRepository inputOutputRepository;
 
-    public String submission(InputRequestDto requestDto, Long questionId) throws SQLException {
+    public String submission(InputRequestDto requestDto, Long questionId) throws SQLException, IOException {
 
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
@@ -44,8 +43,12 @@ public class AnswerCheckService {
         StringBuffer errorLog = new StringBuffer();
         StringBuilder sb = new StringBuilder();
         String DBinput = "";
+        List<String> DBinputList = new ArrayList<>();
+        String line = "";
+        String answer = "";
+        List<String> answerList = new ArrayList<>();
+        StringBuilder asb = new StringBuilder();
 
-        
         // Create the userfile
         System.out.println("Create the userfile");
         try {
@@ -82,21 +85,29 @@ public class AnswerCheckService {
         String url = "jdbc:mysql://judge.cykmfwbvkn4k.ap-northeast-2.rds.amazonaws.com:3306/judge?serverTimezone=UTC&characterEncoding=UTF-8";
         String user = "admin";
         String password = "ideapad330";
-        String query = "SELECT * FROM input_value WHERE question_id = ?";
+        String query = "SELECT * FROM input_output WHERE question_id = ?";
 
-         // Execute a query to get the contents of the database
-         try (
-            Connection conn = DriverManager.getConnection(url, user, password);
-            PreparedStatement stmt = conn.prepareStatement(query)) {
+        // Execute a query to get the contents of the database
+        try (
+                Connection conn = DriverManager.getConnection(url, user, password);
+                PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setLong(1, questionId);
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                sb.append(rs.getString("input")).append("\n");
+                String[] rsSplit = rs.getString("input").split(",");
+                for (int i = 0; i < rsSplit.length; i++) {
+                    if (!rs.isLast()) {
+                        sb.append(rsSplit[i]).append("\n");
+                    } else {
+                        sb.append(rsSplit[i]);
+                    }
+                    DBinput = sb.toString();
+                    sb.setLength(0); // sb reset
+                }
+                DBinputList.add(DBinput);
             }
-            DBinput = sb.toString();
-            System.out.println("DBinput :" + DBinput);
 
             // Close the database connection
             rs.close();
@@ -105,7 +116,6 @@ public class AnswerCheckService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         try {
             // chmod the file
@@ -125,58 +135,58 @@ public class AnswerCheckService {
             e.printStackTrace();
         }
 
-       
-
-        try {
-            // Pass the contents as a parameter to the command executed by ProcessBuilder
-            System.out.println("Build the command as a list of strings");
-            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/" + langFile, userFile.getAbsolutePath(), DBinput);
+        // Pass the contents as a parameter to the command executed by ProcessBuilder
+        System.out.println("Build the command as a list of strings");
+        for (int i = 0; i < inputOutput.size(); i++) {
+            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/" + langFile, userFile.getAbsolutePath(),
+                    DBinputList.get(i));
             pb.directory(new File("/home/ubuntu/"));
 
             pb.redirectErrorStream(true);
 
             // Start the process
-            System.out.println("Start the process");
+            System.out.println("Start the process times : " + (i + 1));
             Process process = pb.start();
 
-            // Read the output from the process  
+            // Read the output from the process
             System.out.println("Read the output from the process");
-            try               
-                (InputStream inputStream = process.getInputStream();
-                InputStream stderr = process.getErrorStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                BufferedReader errReader = new BufferedReader(new InputStreamReader(stderr));) {
-                String line = "";
-                List<String> answer = new ArrayList<>();
+            try (InputStream inputStream = process.getInputStream();
+                    InputStream stderr = process.getErrorStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    BufferedReader errReader = new BufferedReader(new InputStreamReader(stderr));) {
 
-                for (int i = 0; i < inputOutput.size(); i++) {
-                    answer.add(inputOutput.get(i).getOutputs().toString());
-                }
-                
+                String[] outputSplit = inputOutput.get(i).getOutput().split(",");
+                for (int j = 0; j < outputSplit.length; j++) {
+                    if (i != inputOutput.size() - 1) {
+                        asb.append(outputSplit[j]).append("\n");
+                    } else {
+                        asb.append(outputSplit[j]);
+                    }
 
-                if (inputStream == null || inputStream.available() == 0) {
-                    System.out.println("No data in inputstream.");
+                    answer = asb.toString();
+                    asb.setLength(0); // asb reset
+
                 }
+                answerList.add(answer);
 
                 while ((line = errReader.readLine()) != null) {
-                    errorLog.append(line).append("\n");
-                    System.out.println("line : " + line);
+                    errorLog.append(line);
                 }
 
                 if (errorLog.length() == 0) {
-                    int index = 0;
                     isPassed = true;
                     System.out.println("Entering reader while");
                     while ((line = reader.readLine()) != null) {
-                        System.out.println("line : " + line);
-                        errorLog.append(line).append("\n");
-                        if (answer != null && !answer.isEmpty() && !answer.get(index).equals(line)) {
-                            System.out.println("answer : " + answer);
-                            System.out.println("line : " + line);
+                        if (!answerList.get(i).replace("\n", "").equals(line)) {
+                            System.out.println("Test " + (i + 1) + " failed.");
+                            errorLog.append("Test " + (i + 1) + " Failed").append("\n").append("Input: ")
+                                    .append(inputOutput.get(i).getInput()).append("\n").append("Expected output: ")
+                                    .append(inputOutput.get(i).getOutput()).append("\n").append("Your output: ")
+                                    .append(line).append("\n");
                             isPassed = false;
                             break;
                         }
-                        index++;
+
                     }
                 }
 
@@ -187,20 +197,16 @@ public class AnswerCheckService {
                     System.out.println("Command exited with error code: " + exitValue);
                 }
 
-
+                reader.close();
+                errReader.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            if (isPassed) {
-                return "Test Success";
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
+        if (isPassed) {
+            return "Test Success";
+        }
         // send above errorlog to user.
-        return "Test Failed " + errorLog.toString();
+        return "Test Failed ErrorLog : " + errorLog.toString();
     }
 }
