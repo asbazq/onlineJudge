@@ -38,14 +38,10 @@ public class InputOutput implements Serializable { // 영속성 컨텍스트는 
     private Question question;
 
     @Column(name = "input")
-    @ElementCollection
-    @CollectionTable(name = "input_value", joinColumns = @JoinColumn(name = "question_id", referencedColumnName = "question_id"))
-    private List<String> inputs = new ArrayList<>();
+    private String input;
 
     @Column(name = "output")
-    @ElementCollection
-    @CollectionTable(name = "output_value", joinColumns = @JoinColumn(name = "question_id", referencedColumnName = "question_id"))
-    private List<String> outputs = new ArrayList<>();
+    private String output;
 
     
 }

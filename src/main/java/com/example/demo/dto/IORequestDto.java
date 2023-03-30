@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Getter
 public class IORequestDto {
-    private List<String> input;
-    private List<String> output;
+    private String input;
+    private String output;
 
 
 

@@ -52,8 +52,8 @@ public class QuestionService {
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         InputOutput inputOutput = new InputOutput();
-        inputOutput.setInputs(requestDto.getInput());
-        inputOutput.setOutputs(requestDto.getOutput());
+        inputOutput.setInput(requestDto.getInput());
+        inputOutput.setOutput(requestDto.getOutput());
         inputOutput.setQuestion(question);
 
         inputOutputRepository.save(inputOutput);
