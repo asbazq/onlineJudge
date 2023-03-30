@@ -59,9 +59,4 @@ public class QuestionController {
                 .body(dtos);
     }
 
-    @GetMapping("test")
-    public String test() {
-        return "hello";
-    }
-
 }
