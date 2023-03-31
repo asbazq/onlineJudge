@@ -155,9 +155,10 @@ public class AnswerCheckService {
             // Read the output from the process
             System.out.println("Read the output from the process");
             try (InputStream inputStream = process.getInputStream();
-                    InputStream stderr = process.getErrorStream();
+                    // InputStream stderr = process.getErrorStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    BufferedReader errReader = new BufferedReader(new InputStreamReader(stderr));) {
+                    // BufferedReader errReader = new BufferedReader(new InputStreamReader(stderr));
+                    ) {
 
                 String[] outputSplit = inputOutput.get(i).getOutput().split(",");
                 for (int j = 0; j < outputSplit.length; j++) {
@@ -173,12 +174,13 @@ public class AnswerCheckService {
                 }
                 answerList.add(answer);
 
-                while ((line = errReader.readLine()) != null) {
-                    errorLog.append(line);
-                }
+                // while ((line = errReader.readLine()) != null) {
+                //     errorLog.append(line);
+                // }
 
                 if (errorLog.length() == 0) {
                     isPassed = true;
+                }
                     System.out.println("Entering reader while");
                     while ((line = reader.readLine()) != null) {
                         if (!answerList.get(i).replace("\n", "").equals(line)) {
@@ -192,7 +194,7 @@ public class AnswerCheckService {
                         }
 
                     }
-                }
+                // }
 
                 // Wait for the process to complete and check the exit value
                 System.out.println("Wait for the process to complete and check the exit value");
@@ -202,7 +204,7 @@ public class AnswerCheckService {
                 }
 
                 reader.close();
-                errReader.close();
+                // errReader.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
