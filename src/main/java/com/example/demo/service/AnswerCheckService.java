@@ -34,13 +34,15 @@ public class AnswerCheckService {
 
         String userCode = requestDto.getInput();
         System.out.println("userCode : " + userCode);
-        // String fileName = Integer.toString(userCode.hashCode());
+        String dirName = Integer.toString(userCode.hashCode());
         String fileName = "Main";
-        String filePath = String.format("/home/ubuntu/onlineJudge/temp/%s.%s", fileName, requestDto.getLang());
+        String filePath = String.format("/home/ubuntu/onlineJudge/" + dirName + "/%s.%s", fileName, requestDto.getLang());
+        String classPath = String.format("/home/ubuntu/onlineJudge/" + dirName + "/%s.%s", fileName, "class");
         File userFile = new File(filePath);
+        File classFile = new File(classPath);
+        File dir = new File(String.format("/home/ubuntu/onlineJudge/" + dirName));
         boolean isPassed = false;
-        // thread-safe
-        StringBuffer errorLog = new StringBuffer();
+        StringBuffer errorLog = new StringBuffer(); // thread-safe
         StringBuilder sb = new StringBuilder();
         String DBinput = "";
         List<String> DBinputList = new ArrayList<>();
@@ -52,6 +54,8 @@ public class AnswerCheckService {
         // Create the userfile
         System.out.println("Create the userfile");
         try {
+            boolean dirCreate = dir.mkdir();
+            System.out.println("directory Create : " + dirCreate);
             userFile.createNewFile();
             FileWriter fw = new FileWriter(userFile);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -203,6 +207,14 @@ public class AnswerCheckService {
                 e.printStackTrace();
             }
         }
+
+     boolean fileDelete = userFile.delete();
+     boolean classDelete = classFile.delete();
+     boolean dirDelete = dir.delete();
+     System.out.println("userFile Delete : " + fileDelete + "\n" + "classFile Delete : " + classDelete);
+     System.out.println("userDirectory Delete : " + dirDelete);
+     
+
         if (isPassed) {
             return "Test Success";
         }
