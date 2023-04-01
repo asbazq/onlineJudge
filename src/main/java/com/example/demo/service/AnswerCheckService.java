@@ -36,7 +36,8 @@ public class AnswerCheckService {
         System.out.println("userCode : " + userCode);
         String dirName = Integer.toString(userCode.hashCode());
         String fileName = "Main";
-        String filePath = String.format("/home/ubuntu/onlineJudge/" + dirName + "/%s.%s", fileName, requestDto.getLang());
+        String filePath = String.format("/home/ubuntu/onlineJudge/" + dirName + "/%s.%s", fileName,
+                requestDto.getLang());
         String classPath = String.format("/home/ubuntu/onlineJudge/" + dirName + "/%s.%s", fileName, "class");
         File userFile = new File(filePath);
         File classFile = new File(classPath);
@@ -100,16 +101,9 @@ public class AnswerCheckService {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                String[] rsSplit = rs.getString("input").split(",");
-                for (int i = 0; i < rsSplit.length; i++) {
-                    if (!rs.isLast()) {
-                        sb.append(rsSplit[i]).append("\n");
-                    } else {
-                        sb.append(rsSplit[i]);
-                    }
-                    DBinput = sb.toString();
-                    sb.setLength(0); // sb reset
-                }
+                sb.append(rs.getString("input"));
+                DBinput = sb.toString();
+                sb.setLength(0); // sb reset
                 DBinputList.add(DBinput);
             }
 
@@ -155,46 +149,29 @@ public class AnswerCheckService {
             // Read the output from the process
             System.out.println("Read the output from the process");
             try (InputStream inputStream = process.getInputStream();
-                    // InputStream stderr = process.getErrorStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    // BufferedReader errReader = new BufferedReader(new InputStreamReader(stderr));
-                    ) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));) {
 
-                String[] outputSplit = inputOutput.get(i).getOutput().split(",");
-                for (int j = 0; j < outputSplit.length; j++) {
-                    if (i != inputOutput.size() - 1) {
-                        asb.append(outputSplit[j]).append("\n");
-                    } else {
-                        asb.append(outputSplit[j]);
-                    }
-
-                    answer = asb.toString();
-                    asb.setLength(0); // asb reset
-
-                }
+                asb.append(inputOutput.get(i).getOutput());
+                answer = asb.toString();
+                asb.setLength(0); // asb reset
                 answerList.add(answer);
-
-                // while ((line = errReader.readLine()) != null) {
-                //     errorLog.append(line);
-                // }
 
                 if (errorLog.length() == 0) {
                     isPassed = true;
                 }
-                    System.out.println("Entering reader while");
-                    while ((line = reader.readLine()) != null) {
-                        if (!answerList.get(i).replace("\n", "").equals(line)) {
-                            System.out.println("Test " + (i + 1) + " failed.");
-                            errorLog.append("Test " + (i + 1) + " Failed").append("\n").append("Input: ")
-                                    .append(inputOutput.get(i).getInput()).append("\n").append("Expected output: ")
-                                    .append(inputOutput.get(i).getOutput()).append("\n").append("Your output: ")
-                                    .append(line).append("\n");
-                            isPassed = false;
-                            break;
-                        }
-
+                System.out.println("Entering reader while");
+                while ((line = reader.readLine()) != null) {
+                    if (!answerList.get(i).replace("\n", "").equals(line)) {
+                        System.out.println("Test " + (i + 1) + " failed.");
+                        errorLog.append("Test " + (i + 1) + " Failed").append("\n").append("Input: ")
+                                .append(inputOutput.get(i).getInput()).append("\n").append("Expected output: ")
+                                .append(inputOutput.get(i).getOutput()).append("\n").append("Your output: ")
+                                .append(line.toString()).append("\n");
+                        isPassed = false;
+                        break;
                     }
-                // }
+
+                }
 
                 // Wait for the process to complete and check the exit value
                 System.out.println("Wait for the process to complete and check the exit value");
@@ -210,17 +187,16 @@ public class AnswerCheckService {
             }
         }
 
-     boolean fileDelete = userFile.delete();
-     boolean classDelete = classFile.delete();
-     boolean dirDelete = dir.delete();
-     System.out.println("userFile Delete : " + fileDelete + "\n" + "classFile Delete : " + classDelete);
-     System.out.println("userDirectory Delete : " + dirDelete);
-     
+        boolean fileDelete = userFile.delete();
+        boolean classDelete = classFile.delete();
+        boolean dirDelete = dir.delete();
+        System.out.println("userFile Delete : " + fileDelete + "\n" + "classFile Delete : " + classDelete);
+        System.out.println("userDirectory Delete : " + dirDelete);
 
         if (isPassed) {
             return "Test Success";
         }
         // send above errorlog to user.
-        return "Test Failed ErrorLog : " + errorLog.toString();
+        return "Test Failed ErrorLog : \n" + errorLog.toString();
     }
 }
