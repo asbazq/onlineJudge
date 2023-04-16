@@ -13,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDetailsImpl implements UserDetails{
+public class UserDetailsImpl implements UserDetails {
 
     private Users users;
 
@@ -25,23 +25,19 @@ public class UserDetailsImpl implements UserDetails{
         return users;
     }
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
     }
 
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-//        users.getRoleList().forEach(r -> {
-//            System.out.println("r: "+r);
-//            authorities.add(()->{ return r;});
-//        });
-//        return authorities;
-//    }
-
-
-
+    // public Collection<? extends GrantedAuthority> getAuthorities() {
+    // Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+    // users.getRoleList().forEach(r -> {
+    // log.info("r: "+r);
+    // authorities.add(()->{ return r;});
+    // });
+    // return authorities;
+    // }
 
     @Override
     public String getPassword() {

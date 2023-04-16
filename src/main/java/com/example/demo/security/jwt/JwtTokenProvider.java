@@ -28,10 +28,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -171,18 +171,16 @@ public class JwtTokenProvider {
             return !claims.getBody().getExpiration().before(new Date());
         } catch (SecurityException e) {
             log.info("Invalid JWT signature.");
-            throw new JwtException("잘못된 JWT 시그니처");
         } catch (MalformedJwtException e) {
             log.info("Invalid JWT token.");
-            throw new JwtException("유효하지 않은 JWT 토큰");
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT token.");
-            throw new JwtException("토큰 기한 만료");
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token.");
         } catch (IllegalArgumentException e) {
             log.info("JWT token compact of handler are invalid.");
-            throw new JwtException("JWT token compact of handler are invalid.");
+        } catch (SignatureException e) {
+            log.info("JWT signature does not match locally computed signature.");
         }
         return false;
     }

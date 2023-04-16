@@ -17,9 +17,11 @@ import com.example.demo.security.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor // final 생성자 자동 생성
-//@AllArgsConstructor
+// @AllArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -31,62 +33,65 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
 
-        System.out.println("JwtAuthenticationFilter : 진입");
+        log.info("JwtAuthenticationFilter : 진입");
         // 1. request에 있는 username과 password를 파싱해서 자바 Object로 받기
         ObjectMapper om = new ObjectMapper();
         LoginRequestDto loginRequestDto = null;
         try {
             // x-www.form-urlencoded 방식
-//            BufferedReader br = request.getReader();
-//
-//            String input = null;
-//            while ((input = br.readLine()) != null) {
-//                System.out.println(input);
-//            }
+            // BufferedReader br = request.getReader();
+            //
+            // String input = null;
+            // while ((input = br.readLine()) != null) {
+            // log.info(input);
+            // }
             // json 방식
             loginRequestDto = om.readValue(request.getInputStream(), LoginRequestDto.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        System.out.println("JwtAuthenticationFilter : " + loginRequestDto);
+        log.info("JwtAuthenticationFilter : " + loginRequestDto);
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                        loginRequestDto.getUsername(),
-                        loginRequestDto.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                loginRequestDto.getUsername(),
+                loginRequestDto.getPassword());
 
-        System.out.println("JwtAuthenticationFilter : 토큰생성완료");
-        Authentication authentication =
-                authenticationManager.authenticate(authenticationToken);
+        log.info("JwtAuthenticationFilter : 토큰생성완료");
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-        System.out.println("Authentication : " + userDetailsImpl.getUsers().getUsername());
+        log.info("Authentication : " + userDetailsImpl.getUsers().getUsername());
         return authentication;
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            FilterChain chain,
-                                            Authentication authResult) throws UnsupportedEncodingException {
+            HttpServletResponse response,
+            FilterChain chain,
+            Authentication authResult) throws UnsupportedEncodingException {
 
         // 해당 principalDetails 정보를 통해 Jwt token 생성
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authResult.getPrincipal();
 
         // Hash 방식
-        String accessToken = jwtTokenProvider.createToken(userDetailsImpl.getUsername(), userDetailsImpl.getUsers().getId());
+        String accessToken = jwtTokenProvider.createToken(userDetailsImpl.getUsername(),
+                userDetailsImpl.getUsers().getId());
 
         String refreshToken = jwtTokenProvider.createRefreshToken(userDetailsImpl.getUsername());
 
-
-        // redisUtil.setDataExpire(userDetailsImpl.getUsername()+JwtProperties.HEADER_ACCESS, JwtProperties.TOKEN_PREFIX + accessToken, JwtProperties.ACCESS_EXPIRATION_TIME);
-        // redisUtil.setDataExpire(userDetailsImpl.getUsername()+JwtProperties.HEADER_REFRESH, JwtProperties.TOKEN_PREFIX + refreshToken, JwtProperties.REFRESH_EXPIRATION_TIME);
-        // String nickname = URLEncoder.encode(userDetailsImpl.getUsers().getNickname(),"utf-8");
+        // redisUtil.setDataExpire(userDetailsImpl.getUsername()+JwtProperties.HEADER_ACCESS,
+        // JwtProperties.TOKEN_PREFIX + accessToken,
+        // JwtProperties.ACCESS_EXPIRATION_TIME);
+        // redisUtil.setDataExpire(userDetailsImpl.getUsername()+JwtProperties.HEADER_REFRESH,
+        // JwtProperties.TOKEN_PREFIX + refreshToken,
+        // JwtProperties.REFRESH_EXPIRATION_TIME);
+        // String nickname =
+        // URLEncoder.encode(userDetailsImpl.getUsers().getNickname(),"utf-8");
         response.setHeader(JwtProperties.HEADER_ACCESS, JwtProperties.TOKEN_PREFIX + accessToken);
         response.setHeader(JwtProperties.HEADER_REFRESH, JwtProperties.TOKEN_PREFIX + refreshToken);
         response.setHeader("username", userDetailsImpl.getUsername());
-               
+
     }
 
 }
