@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Question extends BaseEntity {
 
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +35,12 @@ public class Question extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column
+    private String restrictions;
+
+    @Column
+    private String example;
+
     @OneToMany(mappedBy = "question", orphanRemoval = true)
     @Builder.Default
     private List<InputOutput> inputOutputs = new ArrayList<>();
@@ -44,10 +49,12 @@ public class Question extends BaseEntity {
     @JoinColumn(name = "users_id")
     private Users users;
 
-    public Question(Long id, String title, String content, Users users) {
+    public Question(Long id, String title, String content, String restrictions, String example, Users users) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.users = users;
+        this.restrictions = restrictions;
+        this.example = example;
     }
 }

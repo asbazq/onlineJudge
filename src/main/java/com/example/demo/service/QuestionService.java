@@ -39,6 +39,8 @@ public class QuestionService {
         Question question = Question.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
+                .restrictions(requestDto.getRestrictions())
+                .example(requestDto.getExample())
                 .build();
 
         questionRepository.save(question);
@@ -60,7 +62,6 @@ public class QuestionService {
 
     }
 
-
     // 문제 상세 조회
     public QuestionResponseDto getQuestion(Long id) {
         Question question = questionRepository.findById(id)
@@ -69,22 +70,34 @@ public class QuestionService {
     }
 
     // 문제 전체 조회
-    public List<AllQuestionResponseDto> getquestions(int page, int size, String sortby) {
+    // public List<AllQuestionResponseDto> getquestions(int page, int size, String
+    // sortby) {
 
-        page = page - 1;
-        Sort.Direction direction = Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortby);
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-        Page<Question> questionPage = questionRepository.findAll(pageRequest);
+    // page = page - 1;
+    // Sort.Direction direction = Sort.Direction.DESC;
+    // Sort sort = Sort.by(direction, sortby);
+    // PageRequest pageRequest = PageRequest.of(page, size, sort);
+    // Page<Question> questionPage = questionRepository.findAll(pageRequest);
 
+    // List<AllQuestionResponseDto> questionResponseDtos = new ArrayList<>();
+
+    // for (Question question : questionPage) {
+    // AllQuestionResponseDto responseDto = new AllQuestionResponseDto(question);
+    // questionResponseDtos.add(responseDto);
+    // }
+
+    // return questionResponseDtos;
+    // }
+
+    // 문제 전체 조회
+    public List<AllQuestionResponseDto> getquestions() {
+        List<Question> questions = questionRepository.findAll();
         List<AllQuestionResponseDto> questionResponseDtos = new ArrayList<>();
 
-        for (Question question : questionPage) {
+        for (Question question : questions) {
             AllQuestionResponseDto responseDto = new AllQuestionResponseDto(question);
             questionResponseDtos.add(responseDto);
         }
-
         return questionResponseDtos;
     }
-
 }

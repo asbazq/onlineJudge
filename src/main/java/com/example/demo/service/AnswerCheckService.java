@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor // final이 붙거나 @NotNull 이 붙은 필드의 생성자를 자동 생성
+@Slf4j
 public class AnswerCheckService {
 
     private final QuestionRepository questionRepository;
@@ -33,7 +35,7 @@ public class AnswerCheckService {
         List<InputOutput> inputOutput = inputOutputRepository.findByQuestionId(question.getId());
 
         String userCode = requestDto.getInput();
-        System.out.println("userCode : " + userCode);
+        log.info("userCode : " + userCode);
         String dirName = Integer.toString(userCode.hashCode());
         String fileName = "Main";
         String filePath = String.format("/home/ubuntu/onlineJudge/" + dirName + "/%s.%s", fileName,
@@ -53,10 +55,10 @@ public class AnswerCheckService {
         StringBuilder asb = new StringBuilder();
 
         // Create the userfile
-        System.out.println("Create the userfile");
+        log.info("Create the userfile");
         try {
             boolean dirCreate = dir.mkdir();
-            System.out.println("directory Create : " + dirCreate);
+            log.info("directory Create : " + dirCreate);
             userFile.createNewFile();
             FileWriter fw = new FileWriter(userFile);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -67,7 +69,7 @@ public class AnswerCheckService {
         }
 
         // Check program language
-        System.out.println("Check program language");
+        log.info("Check program language");
         String langFile;
         switch (requestDto.getLang()) {
             case "java":
@@ -117,24 +119,24 @@ public class AnswerCheckService {
 
         try {
             // chmod the file
-            System.out.println("chmod the userfile");
+            log.info("chmod the userfile");
             ProcessBuilder chmodpb = new ProcessBuilder("chmod", "uo+wx", userFile.getAbsolutePath());
             // start the chmodpb process
-            System.out.println("start the chmodpb process");
+            log.info("start the chmodpb process");
             Process chmodprocess = chmodpb.start();
             int exitValue = chmodprocess.waitFor();
 
             // Wait for the chmod process to complete and check the exit value
-            System.out.println("Wait for the chmod process to complete and check the exit value");
+            log.info("Wait for the chmod process to complete and check the exit value");
             if (exitValue != 0) {
-                System.out.println("Command exited with error code: " + exitValue);
+                log.info("Command exited with error code: " + exitValue);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         // Pass the contents as a parameter to the command executed by ProcessBuilder
-        System.out.println("Build the command as a list of strings");
+        log.info("Build the command as a list of strings");
         for (int i = 0; i < inputOutput.size(); i++) {
             ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/" + langFile, userFile.getAbsolutePath(),
                     DBinputList.get(i));
@@ -143,11 +145,11 @@ public class AnswerCheckService {
             pb.redirectErrorStream(true);
 
             // Start the process
-            System.out.println("Start the process times : " + (i + 1));
+            log.info("Start the process times : " + (i + 1));
             Process process = pb.start();
 
             // Read the output from the process
-            System.out.println("Read the output from the process");
+            log.info("Read the output from the process");
             try (InputStream inputStream = process.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));) {
 
@@ -159,10 +161,10 @@ public class AnswerCheckService {
                 if (errorLog.length() == 0) {
                     isPassed = true;
                 }
-                System.out.println("Entering reader while");
+                log.info("Entering reader while");
                 while ((line = reader.readLine()) != null) {
                     if (!answerList.get(i).replace("\n", "").equals(line)) {
-                        System.out.println("Test " + (i + 1) + " failed.");
+                        log.info("Test " + (i + 1) + " failed.");
                         errorLog.append("Test " + (i + 1) + " Failed").append("\n").append("Input: ")
                                 .append(inputOutput.get(i).getInput()).append("\n").append("Expected output: ")
                                 .append(inputOutput.get(i).getOutput()).append("\n").append("Your output: ")
@@ -174,10 +176,10 @@ public class AnswerCheckService {
                 }
 
                 // Wait for the process to complete and check the exit value
-                System.out.println("Wait for the process to complete and check the exit value");
+                log.info("Wait for the process to complete and check the exit value");
                 int exitValue = process.waitFor();
                 if (exitValue != 0) {
-                    System.out.println("Command exited with error code: " + exitValue);
+                    log.info("Command exited with error code: " + exitValue);
                 }
 
                 reader.close();
@@ -190,8 +192,8 @@ public class AnswerCheckService {
         boolean fileDelete = userFile.delete();
         boolean classDelete = classFile.delete();
         boolean dirDelete = dir.delete();
-        System.out.println("userFile Delete : " + fileDelete + "\n" + "classFile Delete : " + classDelete);
-        System.out.println("userDirectory Delete : " + dirDelete);
+        log.info("userFile Delete : " + fileDelete + "\n" + "classFile Delete : " + classDelete);
+        log.info("userDirectory Delete : " + dirDelete);
 
         if (isPassed) {
             return "Test Success";
