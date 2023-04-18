@@ -25,7 +25,7 @@ public class QuestionController {
     private final QuestionService questionService;
 
     // 문제 작성
-    @PostMapping("api/question")
+    @PostMapping("api/input")
     public ResponseEntity<Void> createQuestion(@RequestBody QuestionRequestDto requestDto) {
         questionService.createQuestion(requestDto);
 
@@ -33,7 +33,7 @@ public class QuestionController {
     }
 
     // 입출력 작성
-    @PostMapping("api/questionio/{questionId}")
+    @PostMapping("api/input/{questionId}")
     public ResponseEntity<Void> putio(@PathVariable Long questionId, @RequestBody IORequestDto requestDto) {
         questionService.putio(questionId, requestDto);
 
@@ -61,7 +61,7 @@ public class QuestionController {
     // }
 
     // 문제 전체 조회
-    @GetMapping("api/questions")
+    @GetMapping("api/question")
     public ResponseEntity<List<AllQuestionResponseDto>> getquestions() {
         List<AllQuestionResponseDto> dtos = questionService.getquestions();
         return ResponseEntity.status(HttpStatus.OK)

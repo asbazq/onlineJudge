@@ -22,7 +22,7 @@ public class AnswerCheckController {
     private final AnswerCheckService answerCheckService;
 
     // 클라이언트 정답 제출
-    @PostMapping("api/question/submission/{questionId}")
+    @PostMapping("api/submission/{questionId}")
     public ResponseEntity<String> submission(@RequestBody InputRequestDto requestDto, @PathVariable Long questionId)
             throws SQLException, IOException {
         String result = answerCheckService.submission(requestDto, questionId);
