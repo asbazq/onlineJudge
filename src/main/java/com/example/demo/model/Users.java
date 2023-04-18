@@ -10,15 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.springframework.data.redis.core.RedisHash;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor // 파라미터가 없는 기본 생성자를 생성
+@AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자 생성
 @Entity
 public class Users {
     @Id
@@ -28,12 +28,18 @@ public class Users {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column
+    @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String email;
 
     @OneToMany(mappedBy = "users")
     private List<PHUsers> problemHistorys = new ArrayList<>();
+
+    public Users(String username, String password, String emaill) {
+        this.username = username;
+        this.password = password;
+        this.email = emaill;
+    }
 }

@@ -45,8 +45,8 @@ public class JwtTokenProvider {
 
     @Value("${jwt.secretKey}")
     private String secretKey;
-    public final HttpServletResponse response;
 
+    public final HttpServletResponse response;
     private final UserDetailsService userDetailsService;
 
     @PostConstruct
