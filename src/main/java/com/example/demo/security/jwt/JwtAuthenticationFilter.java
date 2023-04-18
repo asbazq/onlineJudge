@@ -13,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.demo.dto.LoginRequestDto;
+import com.example.demo.redis.RedisUtil;
 import com.example.demo.security.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,6 +27,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisUtil redisUtil;
 
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
     // 인증 요청시에 실행되는 함수 => /login
@@ -80,14 +82,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String refreshToken = jwtTokenProvider.createRefreshToken(userDetailsImpl.getUsername());
 
-        // redisUtil.setDataExpire(userDetailsImpl.getUsername()+JwtProperties.HEADER_ACCESS,
-        // JwtProperties.TOKEN_PREFIX + accessToken,
-        // JwtProperties.ACCESS_EXPIRATION_TIME);
-        // redisUtil.setDataExpire(userDetailsImpl.getUsername()+JwtProperties.HEADER_REFRESH,
-        // JwtProperties.TOKEN_PREFIX + refreshToken,
-        // JwtProperties.REFRESH_EXPIRATION_TIME);
-        // String nickname =
-        // URLEncoder.encode(userDetailsImpl.getUsers().getNickname(),"utf-8");
+        redisUtil.setDataExpire(userDetailsImpl.getUsername() + JwtProperties.HEADER_ACCESS,
+                JwtProperties.TOKEN_PREFIX + accessToken, JwtProperties.ACCESS_EXPIRATION_TIME);
+        redisUtil.setDataExpire(userDetailsImpl.getUsername() + JwtProperties.HEADER_REFRESH,
+                JwtProperties.TOKEN_PREFIX + refreshToken, JwtProperties.REFRESH_EXPIRATION_TIME);
+        // String nickname
+        // =URLEncoder.encode(userDetailsImpl.getUsers().getNickname(),"utf-8");
         response.setHeader(JwtProperties.HEADER_ACCESS, JwtProperties.TOKEN_PREFIX + accessToken);
         response.setHeader(JwtProperties.HEADER_REFRESH, JwtProperties.TOKEN_PREFIX + refreshToken);
         response.setHeader("username", userDetailsImpl.getUsername());

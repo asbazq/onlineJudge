@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import com.example.demo.redis.RedisUtil;
 import com.example.demo.security.jwt.JwtAuthenticationFilter;
 import com.example.demo.security.jwt.JwtAuthorizationFilter;
 import com.example.demo.security.jwt.JwtProperties;
@@ -37,6 +38,7 @@ public class WebSecurityConfig {
 
         private final CorsFilter corsFilter;
         private final JwtTokenProvider jwtTokenProvider;
+        private final RedisUtil redisUtil;
 
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
@@ -65,7 +67,6 @@ public class WebSecurityConfig {
                                                        // 세션허용,cors등록,formLogin방식을 꺼야함
                                 .httpBasic().disable() // httpbasic방식(기본인증방식) : authorization에 id,pw를 담아서 보내는 방식(여기서
                                                        // id,pw가 노출될수 있음)
-
                                 .csrf().disable()
                                 // .exceptionHandling().authenticationEntryPoint(unauthorizedHandler) // 인증예외처리
                                 // AuthenticationEntryPoint 호출 -> 로그인페이지 이동, 401오류 코드 전달
@@ -78,11 +79,19 @@ public class WebSecurityConfig {
 
                 http
                                 .authorizeRequests()
-                                .antMatchers("/**").permitAll()
-                                // .anyRequest().authenticated(); // 그 외 어떤 요청이든 '인증'하는 화이트리스트 형식
-                                // .anyRequest().permitAll()
-                                .and()
-                                .addFilterBefore(new JwtAuthenticationFilter(authenticationManager, jwtTokenProvider),
+                                .antMatchers("/api/question/**").permitAll()
+                                .antMatchers("/login").permitAll()
+                                .antMatchers("/api/join").permitAll()
+                                .antMatchers("/api/refresh").permitAll()
+                                .antMatchers("/api/submission/**").hasRole("Users")
+                                .antMatchers("/api/input/**").hasRole("ADMIN")
+                                .anyRequest().authenticated(); // 그 외 어떤 요청이든 '인증'하는 화이트리스트 형식
+                // .anyRequest().permitAll()
+
+                http
+                                .addFilterBefore(
+                                                new JwtAuthenticationFilter(authenticationManager, jwtTokenProvider,
+                                                                redisUtil),
                                                 UsernamePasswordAuthenticationFilter.class)
                                 .addFilterBefore(new JwtAuthorizationFilter(jwtTokenProvider),
                                                 UsernamePasswordAuthenticationFilter.class); // 필터가 인증 프로세스 처리할 때만 적용

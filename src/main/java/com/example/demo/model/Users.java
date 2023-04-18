@@ -5,12 +5,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import org.springframework.data.redis.core.RedisHash;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +33,10 @@ public class Users {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column
+    @Enumerated(EnumType.STRING) // DB에 Enum 값이 그대로 String으로 저장
+    private Role role;
 
     @OneToMany(mappedBy = "users")
     private List<PHUsers> problemHistorys = new ArrayList<>();
