@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.Exception.CustomException;
 import com.example.demo.Exception.ErrorCode;
 import com.example.demo.dto.UserRequestDto;
+import com.example.demo.model.Role;
 import com.example.demo.model.Users;
 import com.example.demo.redis.RedisUtil;
 import com.example.demo.repository.UsersRepository;
@@ -29,7 +30,8 @@ public class UserService {
     private final RedisUtil redisUtil;
 
     public void join(UserRequestDto dto) {
-        Users users = new Users(dto.getUsername(), passwordEncoder.encode(dto.getPassword()), dto.getEmail());
+        Users users = new Users(dto.getUsername(), passwordEncoder.encode(dto.getPassword()), dto.getEmail(),
+                Role.ROLE_USERS);
         usersRepository.save(users);
     }
 

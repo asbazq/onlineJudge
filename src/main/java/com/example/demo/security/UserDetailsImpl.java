@@ -1,7 +1,7 @@
 package com.example.demo.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class UserDetailsImpl implements UserDetails {
 
-    private Users users;
+    private Users users; // 컴포지션
 
     public UserDetailsImpl(Users users) {
         this.users = users;
@@ -25,19 +25,25 @@ public class UserDetailsImpl implements UserDetails {
         return users;
     }
 
+    // 해당 Users 의 권한의 리턴
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        // users.getRole()을 Collection 타입으로 받기위해
+        Collection<GrantedAuthority> collection = new ArrayList<>();
+        collection.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return String.valueOf(users.getRole());
+            }
+        });
+        // Collection<GrantedAuthority> collection = new ArrayList<>();
+        // member.getRole().forEach(r-> { // r : return
+        // collection.add(()-> String.valueOf(r));
+        // });
+        return collection;
+        // 권한이 존재안할 시
+        // return Collections.emptyList();
     }
-
-    // public Collection<? extends GrantedAuthority> getAuthorities() {
-    // Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-    // users.getRoleList().forEach(r -> {
-    // log.info("r: "+r);
-    // authorities.add(()->{ return r;});
-    // });
-    // return authorities;
-    // }
 
     @Override
     public String getPassword() {
