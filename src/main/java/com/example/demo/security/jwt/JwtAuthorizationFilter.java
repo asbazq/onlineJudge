@@ -30,8 +30,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             throws IOException, ServletException {
         log.info("JwtAuthorizationFilter : 진입");
         String header = request.getHeader(JwtProperties.HEADER_ACCESS);
-        // 로그인, 리프레시 요청이라면 토큰 검사하지 않음
-        // 리프레시 요청은 만료된 토큰을 파싱하기 위해 검사하지 않음
         if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
@@ -49,6 +47,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        // 로그인, 리프레시 요청이라면 토큰 검사하지 않음
+        // 리프레시 요청은 만료된 토큰을 파싱하기 위해 검사하지 않음
         return request.getServletPath().equals("/login") || request.getServletPath().equals("/api/refresh");
     }
 
