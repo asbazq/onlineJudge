@@ -23,6 +23,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import com.example.demo.Exception.CustomException;
 import com.example.demo.Exception.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
@@ -201,7 +202,9 @@ public class JwtTokenProvider {
         String[] splitJwt = token.split("\\.");
         Base64.Decoder decoder = Base64.getDecoder();
         String payload = new String(decoder.decode(splitJwt[1].getBytes()));
-        HashMap<String, String> payloadMap = new ObjectMapper().readValue(payload, HashMap.class);
+        HashMap<String, String> payloadMap = new ObjectMapper().readValue(payload,
+                new TypeReference<HashMap<String, String>>() {
+                });
         return payloadMap.get("sub");
     }
 }
