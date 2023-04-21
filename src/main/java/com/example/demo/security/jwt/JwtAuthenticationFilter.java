@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.demo.Exception.CustomException;
+import com.example.demo.Exception.ErrorCode;
 import com.example.demo.dto.LoginRequestDto;
 import com.example.demo.redis.RedisUtil;
 import com.example.demo.security.UserDetailsImpl;
@@ -54,6 +56,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         log.info("JwtAuthenticationFilter : " + loginRequestDto);
+
+        if (loginRequestDto == null)
+            throw new CustomException(ErrorCode.EMPTY_CONTENT);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginRequestDto.getUsername(),
