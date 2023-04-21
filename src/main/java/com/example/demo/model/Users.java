@@ -41,6 +41,9 @@ public class Users {
     @OneToMany(mappedBy = "users")
     private List<PHUsers> problemHistorys = new ArrayList<>();
 
+    @OneToMany(mappedBy = "users")
+    private List<Question> question;
+
     public Users(String username, String password, String emaill, Role role) {
         this.username = username;
         this.password = password;
