@@ -1,6 +1,5 @@
 package com.example.demo.security;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Users;
 import com.example.demo.repository.UsersRepository;
-import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
