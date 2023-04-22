@@ -10,7 +10,7 @@ import com.example.demo.repository.UsersRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UsersRepository usersRepository; // 컴포지션
+    private UsersRepository usersRepository; // 컴포지션
 
     public UserDetailsServiceImpl(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
