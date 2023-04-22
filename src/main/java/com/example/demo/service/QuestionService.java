@@ -16,6 +16,7 @@ import com.example.demo.dto.IORequestDto;
 import com.example.demo.model.Question;
 import com.example.demo.repository.InputOutputRepository;
 import com.example.demo.repository.QuestionRepository;
+import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.model.InputOutput;
 
 import lombok.RequiredArgsConstructor;
@@ -28,12 +29,13 @@ public class QuestionService {
     private final InputOutputRepository inputOutputRepository;
 
     // 문제 작성
-    public void createQuestion(QuestionRequestDto requestDto) {
+    public void createQuestion(QuestionRequestDto requestDto, UserDetailsImpl userDetailsImpl) {
         Question question = Question.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
                 .restrictions(requestDto.getRestrictions())
                 .example(requestDto.getExample())
+                .users(userDetailsImpl.getUsers())
                 .build();
 
         questionRepository.save(question);

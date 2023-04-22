@@ -3,14 +3,19 @@ package com.example.demo.service;
 import java.io.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import com.example.demo.Exception.CustomException;
 import com.example.demo.Exception.ErrorCode;
 import com.example.demo.dto.InputRequestDto;
 import com.example.demo.model.InputOutput;
+import com.example.demo.model.ProblemHistory;
 import com.example.demo.model.Question;
+import com.example.demo.model.Users;
 import com.example.demo.repository.InputOutputRepository;
+import com.example.demo.repository.ProblemHistoryRepository;
 import com.example.demo.repository.QuestionRepository;
+import com.example.demo.security.UserDetailsImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -26,8 +31,12 @@ public class AnswerCheckService {
 
     private final QuestionRepository questionRepository;
     private final InputOutputRepository inputOutputRepository;
+    private final ProblemHistoryRepository problemHistoryRepository;
 
-    public String submission(InputRequestDto requestDto, Long questionId) throws SQLException, IOException {
+    public String submission(InputRequestDto requestDto, Long questionId, UserDetailsImpl userDetailsImpl)
+            throws SQLException, IOException {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
@@ -196,9 +205,27 @@ public class AnswerCheckService {
         log.info("userDirectory Delete : " + dirDelete);
 
         if (isPassed) {
+
+            List<Question> qList = new ArrayList<>();
+            qList.add(question);
+            List<Users> uList = new ArrayList<>();
+            uList.add(userDetailsImpl.getUsers());
+
+            ProblemHistory problemHistory = ProblemHistory.builder()
+                    .code(userCode)
+                    .question(qList)
+                    .users(uList)
+                    .build();
+
+            problemHistoryRepository.save(problemHistory);
+
+            stopWatch.stop();
+            log.info("정답 제출 수행시간 >> {}", stopWatch.getTotalTimeSeconds());
             return "Test Success";
         }
         // send above errorlog to user.
+        stopWatch.stop();
+        log.info("정답 제출 수행시간 >> {}", stopWatch.getTotalTimeSeconds());
         return "Test Failed ErrorLog : \n" + errorLog.toString();
     }
 }

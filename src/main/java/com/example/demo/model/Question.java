@@ -41,6 +41,7 @@ public class Question extends BaseEntity {
     @Column
     private String example;
 
+    // orphanRemoval = true 부모 엔티티가 삭제되면 자식 엔티티도 삭제
     @OneToMany(mappedBy = "question", orphanRemoval = true)
     @Builder.Default
     private List<InputOutput> inputOutputs = new ArrayList<>();
@@ -49,12 +50,16 @@ public class Question extends BaseEntity {
     @JoinColumn(name = "users_id")
     private Users users;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "problemHistroy_id")
+    private ProblemHistory problemHistory;
+
     public Question(Long id, String title, String content, String restrictions, String example, Users users) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.users = users;
         this.restrictions = restrictions;
         this.example = example;
+        this.users = users;
     }
 }
