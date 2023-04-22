@@ -22,7 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class InputOutput implements Serializable { // 영속성 컨텍스트는 엔티티의 PK를 사용해서 엔티티를 관리, 그러나 pk가 아닌 unique필드를 사용하기 때문에 직렬화
+public class InputOutput extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
