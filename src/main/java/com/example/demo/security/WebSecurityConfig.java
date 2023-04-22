@@ -83,7 +83,7 @@ public class WebSecurityConfig {
                                 .antMatchers("/login").permitAll()
                                 .antMatchers("/api/join").permitAll()
                                 .antMatchers("/api/refresh").permitAll()
-                                .antMatchers("/api/submission/**").hasRole("USERS")
+                                .antMatchers("/api/submission/**").access("hasRole('USERS') or hasRole('ADMIN')")
                                 .antMatchers("/api/input/**").hasRole("ADMIN")
                                 .anyRequest().authenticated(); // 그 외 어떤 요청이든 '인증'하는 화이트리스트 형식
                 // .anyRequest().permitAll()

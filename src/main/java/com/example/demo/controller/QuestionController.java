@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.demo.dto.AllQuestionResponseDto;
 import com.example.demo.dto.QuestionRequestDto;
 import com.example.demo.dto.QuestionResponseDto;
+import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.service.QuestionService;
 import com.example.demo.dto.IORequestDto;
 
@@ -26,8 +28,9 @@ public class QuestionController {
 
     // 문제 작성
     @PostMapping("api/input")
-    public ResponseEntity<Void> createQuestion(@RequestBody QuestionRequestDto requestDto) {
-        questionService.createQuestion(requestDto);
+    public ResponseEntity<Void> createQuestion(@RequestBody QuestionRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        questionService.createQuestion(requestDto, userDetailsImpl);
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
