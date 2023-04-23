@@ -24,14 +24,12 @@ import com.example.demo.security.jwt.JwtProperties;
 import com.example.demo.security.jwt.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Configuration // 빈 등록
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함
 @RequiredArgsConstructor // final이 붙거나 @NotNull 이 붙은 필드의 생성자 생성
 // @AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자 생성
 @EnableMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화
-@Slf4j
 public class WebSecurityConfig {
         // WebSecurityConfigurerAdapter을 상속받아 configure 재정의 -> SecurityFilterChain과
         // WebSecurityCustomizer을 Bean으로 등록
