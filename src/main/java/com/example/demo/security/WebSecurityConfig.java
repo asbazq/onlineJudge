@@ -31,8 +31,7 @@ import lombok.RequiredArgsConstructor;
 // @AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자 생성
 @EnableMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화
 public class WebSecurityConfig {
-        // WebSecurityConfigurerAdapter을 상속받아 configure 재정의 -> SecurityFilterChain과
-        // WebSecurityCustomizer을 Bean으로 등록
+// WebSecurityConfigurerAdapter을 상속받아 configure 재정의 -> SecurityFilterChain과 WebSecurityCustomizer을 Bean으로 등록
 
         private final CorsFilter corsFilter;
         private final JwtTokenProvider jwtTokenProvider;
@@ -52,8 +51,7 @@ public class WebSecurityConfig {
                                 // .antMatchers("/h2-console/**")
                                 // .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
                                 // .requestMatchers(PathRequest.toH2Console())
-                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // 정적 자원에 대해서
-                                                                                                       // Security를 적용X
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // 정적 자원에 대해서 Security를 적용X
 
         }
 
@@ -63,24 +61,18 @@ public class WebSecurityConfig {
                 http
                                 .formLogin().disable() // 기본적인 formLogin방식을 쓰지않음 -> JWT를 쓰려면 필수 위
                                                        // 세션허용,cors등록,formLogin방식을 꺼야함
-                                .httpBasic().disable() // httpbasic방식(기본인증방식) : authorization에 id,pw를 담아서 보내는 방식(여기서
-                                                       // id,pw가 노출될수 있음)
+                                .httpBasic().disable() // httpbasic방식(기본인증방식) : authorization에 id,pw를 담아서 보내는 방식(여기서 id,pw가 노출될수 있음)
                                 .csrf().disable()
-                                // .exceptionHandling().authenticationEntryPoint(unauthorizedHandler) // 인증예외처리
-                                // AuthenticationEntryPoint 호출 -> 로그인페이지 이동, 401오류 코드 전달
+                                // .exceptionHandling().authenticationEntryPoint(unauthorizedHandler) // 인증예외처리 AuthenticationEntryPoint 호출 -> 로그인페이지 이동, 401오류 코드 전달
                                 // .and()
-                                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 인증이므로
-                                                                                                            // 세션 사용x
+                                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 인증이므로 세션 사용x
                                 .and()
                                 .addFilter(corsFilter)
                                 .headers().frameOptions().sameOrigin();
 
                 http
                                 .authorizeRequests()
-                                .antMatchers("/api/question/**").permitAll()
-                                .antMatchers("/login").permitAll()
-                                .antMatchers("/api/join").permitAll()
-                                .antMatchers("/api/refresh").permitAll()
+                                .antMatchers("/api/question/**", "/login", "/api/join", "/api/refresh", "/api/search**").permitAll()
                                 .antMatchers("/api/submission/**").access("hasRole('USERS') or hasRole('ADMIN')")
                                 .antMatchers("/api/input/**").hasRole("ADMIN")
                                 .anyRequest().authenticated(); // 그 외 어떤 요청이든 '인증'하는 화이트리스트 형식
