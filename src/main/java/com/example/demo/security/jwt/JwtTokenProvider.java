@@ -173,7 +173,7 @@ public class JwtTokenProvider {
         } catch (SecurityException e) {
             log.info("Invalid JWT signature.");
         } catch (MalformedJwtException e) {
-            log.info("Invalid JWT token.");
+            log.info(jwtToken, new CustomException(ErrorCode.INVALID_TOKEN));
         } catch (ExpiredJwtException e) {
             log.info(jwtToken, new CustomException(ErrorCode.EXPIRED_TOKEN));
         } catch (UnsupportedJwtException e) {
