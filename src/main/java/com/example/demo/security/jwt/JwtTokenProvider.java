@@ -181,7 +181,7 @@ public class JwtTokenProvider {
         } catch (IllegalArgumentException e) {
             log.info("JWT token compact of handler are invalid.");
         } catch (SignatureException e) {
-            log.info("JWT signature does not match locally computed signature.");
+            log.info(jwtToken, new CustomException(ErrorCode.INVALID_SIGNATURE_TOKEN));
         }
         return false;
     }
