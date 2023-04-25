@@ -171,7 +171,7 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(setTokenName(jwtToken));
             return !claims.getBody().getExpiration().before(new Date());
         } catch (SecurityException e) {
-            log.info("Invalid JWT signature.");
+            log.info(jwtToken, new CustomException(ErrorCode.INVALID_SIGNATURE_TOKEN));
         } catch (MalformedJwtException e) {
             log.info(jwtToken, new CustomException(ErrorCode.INVALID_TOKEN));
         } catch (ExpiredJwtException e) {
