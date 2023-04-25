@@ -18,16 +18,24 @@ jobs:
     steps:
      # 작업에서 액세스할 수 있도록 $GITHUB_WORKSPACE에서 저장소를 체크아웃합니다.
       - uses: actions/checkout@v2
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
+          java-version: '17'
           distribution: 'zulu'
-
+          
+      # application.properties는 외부에 노출되면 안되므로 Actions가 빌드될때마다 해당 Repository의 Secret 설정을
+      # 이용하여서 설정 파일을 생성해줌 (github에 commit X)
+      - run : touch ./src/main/resources/application.properties
+      - run : echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+      - run : cat ./src/main/resources/application.properties
+      
+      # gradlew에 권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
       
+      # gradlew 빌드
       - name: Build with Gradle
         run: ./gradlew build
         shell: bash
