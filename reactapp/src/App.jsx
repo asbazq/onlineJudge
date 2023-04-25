@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import CodeEditor from "./pages/codeEditor/CodeEditor";
+import './content/styles/style.css';
 import ProblemList from './pages/problemList/ProblemList';
 import ProblemDetail from './pages/problemDetail/ProblemDetail';
 

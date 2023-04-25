@@ -6,3 +6,9 @@ export async function getAllProblems() {
     const res = await makeAxiosGetRequest(url);
     return res;
 }
+
+export async function getQuestion(id) {
+    const url = `${base_url}/question/${id}`;
+    const res = await makeAxiosGetRequest(url);
+    return res;
+}

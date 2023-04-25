@@ -1,0 +1,10 @@
+.select-box .select-box-content {
+    height: 0px;
+    transition: 0.3s;
+}
+
+.select-box .select-box-content.active {
+    max-height: 200px;
+    height: auto;
+    padding: 12px;
+}
