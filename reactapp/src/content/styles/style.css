@@ -1,0 +1,26 @@
+:root {
+    --dark-bg: #282A35;
+    --dark-con-bg: #2B2D3E;
+    --dark-text: #6d6d6d;
+    --confirm-button-color: #3F00FB;
+}
+
+.dark-bg {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+.dark-con-bg {
+    background-color: var(--dark-con-bg);
+    color: var(--dark-text);
+}
+
+.confirm-button {
+    background-color: var(--confirm-button-color);
+    color: #ffffff;
+    font-size: 16px;
+    border-radius: 4px;
+    padding: 8px 12px;
+    border: none;
+    line-height: 1.5;
+}

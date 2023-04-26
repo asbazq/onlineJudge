@@ -1,0 +1,26 @@
+.code-editor {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    flex-direction: column;
+}
+
+.code-editor .button-container {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.code-editor .button-container {
+    padding: 16px;
+}
+
+.console-panel {
+    margin-top: 16px;
+    padding: 16px;
+    height: 100%;
+    width: 100%;
+}
+
+.code-editor .toolbar {
+    padding: 16px;
+}
