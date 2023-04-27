@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import CodeMirror from '@uiw/react-codemirror';
 import './CodeEditor.css';
-import SelectBox from "../../common/SelectBox";
 import { Allotment } from "allotment";
-import ResultPanel from "./ResultPanel";
+import { MenuItem, Select, FormControl } from "@mui/material";
 
 
 export default function CodeEditor(props) {
@@ -19,9 +18,13 @@ export default function CodeEditor(props) {
     return (
         <div className="code-editor">
             <div className="toolbar">
-                <SelectBox
-                    options={[1, 2, 3, 4, 5]}
-                />
+                <FormControl sx={{ minWidth: 120 }}>
+                    <Select defaultValue={"java"}>
+                        <MenuItem value="py">Python</MenuItem>
+                        <MenuItem value="java">Java</MenuItem>
+                        <MenuItem value="c">C</MenuItem>
+                    </Select>
+                </FormControl>
             </div>
             <Allotment
                 proportionalLayout={false}

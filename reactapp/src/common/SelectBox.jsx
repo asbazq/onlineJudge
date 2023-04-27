@@ -11,21 +11,22 @@ export default function SelectBox(props) {
     } = props;
 
     const [localValue, setLocalValue] = useState();
-    const [open, setOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     let value = controlledValue === undefined ? localValue : controlledValue;
-    value = displayExpr === undefined ? value : value?.[placeHolder];
+    value = displayExpr === undefined ? value : value?.[displayExpr];
 
-    const onClick = (e, idx) => {
+    const toggle = () => setIsOpen(cur => !cur);
+
+    const onClick = (e, option) => {
         onChange({
             event: e,
-            value: options[idx],
+            value: option,
             previousValue: value,
         });
-        setLocalValue(options[idx]);
+        setLocalValue(option);
+        setIsOpen(false);
     }
-
-    const toggle = () => setOpen(cur => !cur);
 
     const reset = () => {
         onChange({
@@ -37,22 +38,25 @@ export default function SelectBox(props) {
     }
 
     return (
-        <div className="select-box" onClick={toggle}>
-            <div>
+        <div className="select-box">
+            <div onClick={toggle}>
                 {value === undefined ? placeHolder : value}
             </div>
-            <ul className="select-box-content">
-                {
-                    options?.map((option, idx) => {
-                        <li
-                            key={idx}
-                            onClick={(e) => onClick(e, idx)}
-                        >
-                            {displayExpr === undefined ? option : option?.[displayExpr]}
-                        </li>
-                    })
-                }
-            </ul>
+            {
+                isOpen &&
+                <ul>
+                    {
+                        options.map((option, index) => {
+                            return <li
+                                key={index}
+                                onClick={(e) => onClick(e, option)}
+                            >
+                                {displayExpr === undefined ? option : option[displayExpr]}
+                            </li>
+                        })
+                    }
+                </ul>
+            }
         </div>
     )
 }

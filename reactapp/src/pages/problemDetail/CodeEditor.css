@@ -22,5 +22,7 @@
 }
 
 .code-editor .toolbar {
-    padding: 16px;
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 5px 20px;
 }

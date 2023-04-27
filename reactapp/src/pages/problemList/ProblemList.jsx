@@ -4,7 +4,6 @@ import { getAllProblems } from "../../apiInterface/ProblemAPIs";
 
 const dummies = [1, 2, 3, 4, 5]
 export default function ProblemList(props) {
-    const handleChallengeClick = () => { }
     const [problems, setProblems] = useState([]);
 
     useEffect(() => {
@@ -13,7 +12,9 @@ export default function ProblemList(props) {
 
     const init = async () => {
         const res = await getAllProblems();
-        setProblems(res);
+        if (res.status === 200) {
+            setProblems(res.data);
+        }
     }
 
     return (
@@ -29,18 +30,14 @@ export default function ProblemList(props) {
                 <h2>Coding Test Site!</h2>
                 <ul className="challenge-list">
                     {
-                        problems?.map((problem) => {
+                        problems?.map((problem, i) => {
                             return (
-                                <li>
+                                <li key={i}>
                                     <a href={`/problems/${problem.questionId}`} >{problem.title}</a>
                                 </li>
                             )
                         })
                     }
-                    <li><a href="/problems/1" data-id="1" onClick={handleChallengeClick}>문제 1</a></li>
-                    <li><a href="#" data-id="2" onClick={handleChallengeClick}>문제 2</a></li>
-                    <li><a href="#" data-id="3" onClick={handleChallengeClick}>문제 3</a></li>
-                    <li><a href="#" data-id="4" onClick={handleChallengeClick}>문제 4</a></li>
                 </ul>
             </main>
             <footer className="footer">
