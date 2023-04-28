@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,14 @@ public class QuestionController {
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         questionService.createQuestion(requestDto, userDetailsImpl);
 
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    //문제 삭제
+    @DeleteMapping("api/delete/{questionId}")
+    public ResponseEntity<Void> deleteque(@PathVariable Long questionId,
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        questionService.deleteque(questionId, userDetailsImpl);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
