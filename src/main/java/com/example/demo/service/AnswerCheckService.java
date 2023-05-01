@@ -77,25 +77,25 @@ public class AnswerCheckService {
             e.printStackTrace();
         }
 
-        // Check program language
-        log.info("Check program language");
-        String langFile;
-        switch (requestDto.getLang()) {
-            case "java":
-                langFile = "javac.sh";
-                break;
-            case "python":
-                langFile = "pyconverter.sh";
-                break;
-            case "c":
-                langFile = "cconverter.sh";
-                break;
-            case "cpp":
-                langFile = "cppconverter.sh";
-                break;
-            default:
-                throw new CustomException(ErrorCode.LANGUAGE_NOT_FOUND);
-        }
+        // // Check program language
+        // log.info("Check program language");
+        // String langFile;
+        // switch (requestDto.getLang()) {
+        //     case "java":
+        //         langFile = "javac.sh";
+        //         break;
+        //     case "python":
+        //         langFile = "pyconverter.sh";
+        //         break;
+        //     case "c":
+        //         langFile = "cconverter.sh";
+        //         break;
+        //     case "cpp":
+        //         langFile = "cppconverter.sh";
+        //         break;
+        //     default:
+        //         throw new CustomException(ErrorCode.LANGUAGE_NOT_FOUND);
+        // }
 
         // Connect to the database
         String url = "jdbc:mysql://judge.cykmfwbvkn4k.ap-northeast-2.rds.amazonaws.com:3306/judge?serverTimezone=UTC&characterEncoding=UTF-8";
@@ -147,8 +147,8 @@ public class AnswerCheckService {
         // Pass the contents as a parameter to the command executed by ProcessBuilder
         log.info("Build the command as a list of strings");
         for (int i = 0; i < inputOutput.size(); i++) {
-            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/" + langFile, userFile.getAbsolutePath(),
-                    DBinputList.get(i));
+            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/onlineJudge/converter.sh", userFile.getAbsolutePath(),
+                    requestDto.getLang(), DBinputList.get(i));
             pb.directory(new File("/home/ubuntu/"));
 
             pb.redirectErrorStream(true);

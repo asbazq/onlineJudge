@@ -11,10 +11,20 @@ export default function DescriptionPanel(props) {
             <hr />
             <h4>Content</h4>
             <div>{data?.content}</div>
-            <h4>Examples</h4>
-            <div>{data?.example}</div>
-            <h4>Restrictions</h4>
-            <div>{data?.restriction}</div>
+            {
+                data?.example &&
+                <>
+                    <h4>Examples</h4>
+                    <div>{data?.example}</div>
+                </>
+            }
+            {
+                data?.restriction &&
+                <>
+                    <h4>Restrictions</h4>
+                    <div>{data?.restriction}</div>
+                </>
+            }
         </div>
     )
 }

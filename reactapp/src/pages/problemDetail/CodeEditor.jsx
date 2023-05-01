@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import CodeMirror from '@uiw/react-codemirror';
 import './CodeEditor.css';
 import { Allotment } from "allotment";
 import { MenuItem, Select, FormControl } from "@mui/material";
+import { submitAnswer } from "../../apiInterface/ProblemAPIs";
+import { useAsyncError, useParams } from "react-router-dom";
 
 
 export default function CodeEditor(props) {
@@ -11,16 +13,34 @@ export default function CodeEditor(props) {
         consoleText,
     } = props;
 
-    const onChange = (e) => {
-        onChangeCallback(e);
+    const param = useParams();
+    const [lang, setLang] = useState("java");
+    const [code, setCode] = useState();
+
+    const onCodeChanged = (e) => {
+        setCode(e);
+    }
+
+    const onLangChanged = (e) => {
+        setLang(e.target.value);
+    }
+
+    const submit = async () => {
+        const param = {
+            input: code,
+            lang: lang,
+        }
+        const res = await submitAnswer(param.id, param);
+
+        console.log(res);
     }
 
     return (
         <div className="code-editor">
             <div className="toolbar">
                 <FormControl sx={{ minWidth: 120 }}>
-                    <Select defaultValue={"java"}>
-                        <MenuItem value="py">Python</MenuItem>
+                    <Select value={lang} onChange={onLangChanged}>
+                        <MenuItem value="python">Python</MenuItem>
                         <MenuItem value="java">Java</MenuItem>
                         <MenuItem value="c">C</MenuItem>
                     </Select>
@@ -32,7 +52,7 @@ export default function CodeEditor(props) {
             >
                 <Allotment.Pane priority="low">
                     <CodeMirror
-                        onChange={onChange}
+                        onChange={onCodeChanged}
                         theme="dark"
                     />
                 </Allotment.Pane>
@@ -46,7 +66,7 @@ export default function CodeEditor(props) {
                 </Allotment.Pane>
             </Allotment>
             <div className="button-container">
-                <button className="confirm-button">submit</button>
+                <button className="confirm-button" onClick={submit}>submit</button>
             </div>
         </div>
     );
