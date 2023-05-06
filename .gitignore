@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 application.properties
 schema.sql
+package-lock.json
 
 ### STS ###
 .apt_generated
