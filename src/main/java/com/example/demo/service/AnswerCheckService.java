@@ -173,6 +173,8 @@ public class AnswerCheckService {
 
                 }
 
+                reader.close();
+                
                 // Wait for the process to complete and check the exit value
                 log.info("Wait for the process to complete and check the exit value");
                 int exitValue = process.waitFor();
@@ -180,7 +182,7 @@ public class AnswerCheckService {
                     log.info("Command exited with error code: " + exitValue);
                 }
 
-                reader.close();
+               
                 // errReader.close();
             } catch (Exception e) {
                 e.printStackTrace();
