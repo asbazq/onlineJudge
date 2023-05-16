@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.io.*;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -32,6 +33,16 @@ public class AnswerCheckService {
     private final QuestionRepository questionRepository;
     private final InputOutputRepository inputOutputRepository;
     private final ProblemHistoryRepository problemHistoryRepository;
+    
+    // database information
+    @Value("${spring.datasource.username}")
+    String user;
+    
+    @Value("${spring.datasource.password}")
+    String password;
+
+    @Value("${spring.datasource.url}")
+    String url;
 
     public String submission(InputRequestDto requestDto, Long questionId, UserDetailsImpl userDetailsImpl)
             throws SQLException, IOException {
@@ -63,6 +74,7 @@ public class AnswerCheckService {
         List<String> answerList = new ArrayList<>();
         StringBuilder asb = new StringBuilder();
 
+
         // Create the userfile
         log.info("Create the userfile");
         try {
@@ -77,35 +89,12 @@ public class AnswerCheckService {
             e.printStackTrace();
         }
 
-        // // Check program language
-        // log.info("Check program language");
-        // String langFile;
-        // switch (requestDto.getLang()) {
-        //     case "java":
-        //         langFile = "javac.sh";
-        //         break;
-        //     case "python":
-        //         langFile = "pyconverter.sh";
-        //         break;
-        //     case "c":
-        //         langFile = "cconverter.sh";
-        //         break;
-        //     case "cpp":
-        //         langFile = "cppconverter.sh";
-        //         break;
-        //     default:
-        //         throw new CustomException(ErrorCode.LANGUAGE_NOT_FOUND);
-        // }
-
-        // Connect to the database
-        String url = "jdbc:mysql://judge.cykmfwbvkn4k.ap-northeast-2.rds.amazonaws.com:3306/judge?serverTimezone=UTC&characterEncoding=UTF-8";
-        String user = "admin";
-        String password = "ideapad330";
         String query = "SELECT * FROM input_output WHERE question_id = ?";
 
-        // Execute a query to get the contents of the database
+        // Connect to the database
         try (
                 Connection conn = DriverManager.getConnection(url, user, password);
+                // Execute a query to get the contents of the database
                 PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setLong(1, questionId);
@@ -147,7 +136,7 @@ public class AnswerCheckService {
         // Pass the contents as a parameter to the command executed by ProcessBuilder
         log.info("Build the command as a list of strings");
         for (int i = 0; i < inputOutput.size(); i++) {
-            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/onlineJudge/converter.sh", userFile.getAbsolutePath(),
+            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/converter.sh", userFile.getAbsolutePath(),
                     requestDto.getLang(), DBinputList.get(i));
             pb.directory(new File("/home/ubuntu/"));
 
