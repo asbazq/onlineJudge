@@ -190,11 +190,11 @@ public class AnswerCheckService {
             }
         }
 
-        // boolean fileDelete = userFile.delete();
-        // boolean classDelete = classFile.delete();
-        // boolean dirDelete = dir.delete();
-        // log.info("userFile Delete : " + fileDelete + "\n" + "classFile Delete : " + classDelete);
-        // log.info("userDirectory Delete : " + dirDelete);
+        boolean fileDelete = userFile.delete();
+        boolean classDelete = classFile.delete();
+        boolean dirDelete = dir.delete();
+        log.info("userFile Delete : " + fileDelete + "\n" + "classFile Delete : " + classDelete);
+        log.info("userDirectory Delete : " + dirDelete);
 
         if (isPassed) {
 
