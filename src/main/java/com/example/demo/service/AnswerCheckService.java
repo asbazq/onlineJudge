@@ -161,6 +161,7 @@ public class AnswerCheckService {
                 }
                 log.info("Entering reader while");
                 while ((line = reader.readLine()) != null) {
+                    log.info("entering if")
                     if (!answerList.get(i).replace("\n", "").equals(line)) {
                         log.info("Test " + (i + 1) + " failed.");
                         errorLog.append("Test " + (i + 1) + " Failed").append("\n").append("Input: ")
