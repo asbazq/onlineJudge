@@ -136,7 +136,9 @@ public class AnswerCheckService {
         // Pass the contents as a parameter to the command executed by ProcessBuilder
         log.info("Build the command as a list of strings");
         for (int i = 0; i < inputOutput.size(); i++) {
-            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/converter.sh", userFile.getAbsolutePath(), DBinputList.get(i));
+            ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/converter.sh", userFile.getAbsolutePath(), requestDto.getLang(),
+                    DBinputList.get(i));
+            log.info(userFile.getAbsolutePath());
             pb.directory(new File("/home/ubuntu/"));
 
             pb.redirectErrorStream(true);
