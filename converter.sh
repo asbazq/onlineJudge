@@ -1,46 +1,61 @@
 #!/bin/bash
 
-filename=${1%.*}
-extension=${1##*.}
+file="$1"
 language=$2
 params="$3"
 
-# check if the file exists
+# Check if the file exists
 if [ ! -f "$1" ]; then
-        echo "File not fond: $1"
+        echo "File not found: $1"
         exit 1
 fi
 
-# parse the String
+# Get the file's extension
+ext="${file##*.}"
+
+# Parse the string
 IFS=',' read -ra args <<< "$params"
 
+# Get current working directory
+cwd=$(pwd)
+
+dir=$(dirname "$1")
+filename=$(basename "$1" .$ext)
 
 # Check program language
 case $language in
-
-	c)
-		#compile and execute the c file
+        c)
+                # Compile and execute the C file
                 gcc -o "$filename" "$1"
-                su -c "./$filename ${args[@]}" dummy
-                exit
+                if [ $? -ne 0 ]; then
+                        echo "Compilation failed"
+                        exit 1
+                fi
+
+                # Run the C program in dummy with the given parameter file
+                cd "$dir"
+                sudo -u dummy "./$filename" "${args[@]}"
+                cd "$cwd"
         ;;
         java)
-                #compile and execute the java file
-                javac "$1"
-                su -c "java $filename ${args[@]}" dummy
-                exit
+                # Compile and execute the Java file
+                javac "$file"
+                if [ $? -ne 0 ]; then
+                        echo "Compilation failed"
+                        exit 1
+                fi
+
+                # Run the Java program in dummy with the given parameter file
+                cd "$dir"
+                sudo -u dummy "java" "$filename" "${args[@]}"
+                cd "$cwd"
         ;;
         python)
-                #compile and execute the python file
-		  su -c "python3 $1 ${args[@]}" dummy
-                exit
+                # Compile and execute the Python file in dummy
+                su -c "python3 $1 ${args[@]}" dummy
         ;;
-                *)
+        *)
                 echo "Invalid language: $language"
                 exit 1
         ;;
 esac
-
-
-
-                                                            
