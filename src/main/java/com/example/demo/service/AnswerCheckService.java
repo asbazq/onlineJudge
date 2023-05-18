@@ -66,13 +66,13 @@ public class AnswerCheckService {
         File dir = new File(String.format("/home/ubuntu/onlineJudge/" + dirName));
         boolean isPassed = false;
         StringBuffer errorLog = new StringBuffer(); // thread-safe
-        StringBuilder sb = new StringBuilder();
-        String DBinput = "";
-        List<String> DBinputList = new ArrayList<>();
+        // StringBuilder sb = new StringBuilder();
+        // String DBinput = "";
+        // List<String> DBinputList = new ArrayList<>();
         String line = "";
-        String answer = "";
-        List<String> answerList = new ArrayList<>();
-        StringBuilder asb = new StringBuilder();
+        // String answer = "";
+        // List<String> answerList = new ArrayList<>();
+        // StringBuilder asb = new StringBuilder();
 
 
         // Create the userfile
@@ -89,31 +89,32 @@ public class AnswerCheckService {
             e.printStackTrace();
         }
 
-        String query = "SELECT * FROM input_output WHERE question_id = ?";
+        // // gets input value from input_output database with the question_id parameter
+        // String query = "SELECT * FROM input_output WHERE question_id = ?";
 
-        // Connect to the database
-        try (
-                Connection conn = DriverManager.getConnection(url, user, password);
-                // Execute a query to get the contents of the database
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+        // // Connect to the database
+        // try (
+        //         Connection conn = DriverManager.getConnection(url, user, password);
+        //         // Execute a query to get the contents of the database
+        //         PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setLong(1, questionId);
+        //     stmt.setLong(1, questionId);
 
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                sb.append(rs.getString("input"));
-                DBinput = sb.toString();
-                sb.setLength(0); // sb reset
-                DBinputList.add(DBinput);
-            }
+        //     ResultSet rs = stmt.executeQuery();
+        //     while (rs.next()) {
+        //         sb.append(rs.getString("input"));
+        //         DBinput = sb.toString();
+        //         sb.setLength(0); // sb reset
+        //         DBinputList.add(DBinput);
+        //     }
 
-            // Close the database connection
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //     // Close the database connection
+        //     rs.close();
+        //     stmt.close();
+        //     conn.close();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
 
         try {
             // chmod the file
@@ -137,7 +138,7 @@ public class AnswerCheckService {
         log.info("Build the command as a list of strings");
         for (int i = 0; i < inputOutput.size(); i++) {
             ProcessBuilder pb = new ProcessBuilder("/home/ubuntu/converter.sh", userFile.getAbsolutePath(), requestDto.getLang(),
-                    DBinputList.get(i));
+                    inputOutput.get(i).getInput());
             log.info(userFile.getAbsolutePath());
             pb.directory(new File("/home/ubuntu/"));
 
@@ -152,17 +153,17 @@ public class AnswerCheckService {
             try (InputStream inputStream = process.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));) {
 
-                asb.append(inputOutput.get(i).getOutput());
-                answer = asb.toString();
-                asb.setLength(0); // asb reset
-                answerList.add(answer);
+                // asb.append(inputOutput.get(i).getOutput());
+                // answer = asb.toString();
+                // asb.setLength(0); // asb reset
+                // answerList.add(answer);
 
                 if (errorLog.length() == 0) {
                     isPassed = true;
                 }
                 log.info("Entering reader while");
                 while ((line = reader.readLine()) != null) {
-                    if (!answerList.get(i).replace("\n", "").equals(line)) {
+                    if (!inputOutput.get(i).getOutput().replace("\n", "").equals(line)) {
                         log.info("Test " + (i + 1) + " failed.");
                         errorLog.append("Test " + (i + 1) + " Failed").append("\n").append("Input: ")
                                 .append(inputOutput.get(i).getInput()).append("\n").append("Expected output: ")
@@ -190,6 +191,7 @@ public class AnswerCheckService {
             }
         }
 
+        // delete file, class, directory
         boolean fileDelete = userFile.delete();
         boolean classDelete = classFile.delete();
         boolean dirDelete = dir.delete();
@@ -198,6 +200,7 @@ public class AnswerCheckService {
 
         if (isPassed) {
 
+            // if ispassed is true, the usercode is stored in the problemHistory 
             List<Question> qList = new ArrayList<>();
             qList.add(question);
             List<Users> uList = new ArrayList<>();
