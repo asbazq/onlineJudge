@@ -1,9 +1,12 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
@@ -15,11 +18,11 @@ import com.example.demo.dto.QuestionRequestDto;
 import com.example.demo.dto.QuestionResponseDto;
 import com.example.demo.dto.IORequestDto;
 import com.example.demo.model.Question;
-import com.example.demo.model.Users;
 import com.example.demo.repository.InputOutputRepository;
 import com.example.demo.repository.QuestionRepository;
-import com.example.demo.repository.UsersRepository;
 import com.example.demo.security.UserDetailsImpl;
+
+
 import com.example.demo.model.InputOutput;
 
 import lombok.RequiredArgsConstructor;
@@ -74,35 +77,13 @@ public class QuestionService {
     }
 
     // 문제 전체 조회
-    // public List<AllQuestionResponseDto> getquestions(int page, int size, String
-    // sortby) {
+    public List<AllQuestionResponseDto> getquestions(int page, int size, String sortby) {
 
-    // page = page - 1;
-    // Sort.Direction direction = Sort.Direction.DESC;
-    // Sort sort = Sort.by(direction, sortby);
-    // PageRequest pageRequest = PageRequest.of(page, size, sort);
-    // Page<Question> questionPage = questionRepository.findAll(pageRequest);
-
-    // List<AllQuestionResponseDto> questionResponseDtos = new ArrayList<>();
-
-    // for (Question question : questionPage) {
-    // AllQuestionResponseDto responseDto = new AllQuestionResponseDto(question);
-    // questionResponseDtos.add(responseDto);
-    // }
-
-    // return questionResponseDtos;
-    // }
-
-    // 문제 전체 조회
-    public List<AllQuestionResponseDto> getquestions() {
-        List<Question> questions = questionRepository.findAll();
-        List<AllQuestionResponseDto> questionResponseDtos = new ArrayList<>();
-
-        for (Question question : questions) {
-            AllQuestionResponseDto responseDto = new AllQuestionResponseDto(question);
-            questionResponseDtos.add(responseDto);
-        }
-        return questionResponseDtos;
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, sortby));
+        Page<Question> questionPage = questionRepository.findAll(pageable);
+        return questionPage.stream()
+        .map(question -> new AllQuestionResponseDto(question))
+                .collect(Collectors.toList());
     }
 
     //문제 삭제
@@ -114,13 +95,13 @@ public class QuestionService {
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         if (question.getUsers().getId().equals(userDetailsImpl.getUsers().getId())) {
-            questionRepository.deleteById(question.getId());
+            questionRepository.deleteById(questionId);
             stopWatch.stop();
             log.info("삭제 수행시간 >> {}", stopWatch.getTotalTimeSeconds());
         } else {
             stopWatch.stop();
             log.info("삭제 수행시간 >> {}", stopWatch.getTotalTimeSeconds());
-            new CustomException(ErrorCode.INVALID_AUTHORITY);
+            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
         }
     }
 }
