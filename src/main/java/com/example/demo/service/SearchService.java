@@ -10,8 +10,8 @@ import com.example.demo.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +23,10 @@ public class SearchService {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         List<Question> questions = questionRepository.searchByTitleOrContentContaining(query);
-        List<QuestionResponseDto> responseDtos = new ArrayList<>();
-        for (Question question : questions) {
-            QuestionResponseDto dto = new QuestionResponseDto(question);
-            responseDtos.add(dto);
-        }
-        stopWatch.stop();
         log.info("검색 수행시간 >> {}", stopWatch.getTotalTimeSeconds());
-        return responseDtos;
+        return questions.stream()
+        .map(question -> new QuestionResponseDto(question))
+                .collect(Collectors.toList());
+
     }
 }
