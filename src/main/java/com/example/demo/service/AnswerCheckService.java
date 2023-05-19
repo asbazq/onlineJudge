@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,16 +36,6 @@ public class AnswerCheckService {
     private final InputOutputRepository inputOutputRepository;
     private final ProblemHistoryRepository problemHistoryRepository;
     
-    // database information
-    @Value("${spring.datasource.username}")
-    String user;
-    
-    @Value("${spring.datasource.password}")
-    String password;
-
-    @Value("${spring.datasource.url}")
-    String url;
-
     public String submission(InputRequestDto requestDto, Long questionId, UserDetailsImpl userDetailsImpl)
             throws SQLException, IOException {
         StopWatch stopWatch = new StopWatch();
@@ -52,7 +44,7 @@ public class AnswerCheckService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        List<InputOutput> inputOutput = inputOutputRepository.findByQuestionId(question.getId());
+        List<InputOutput> inputOutput = inputOutputRepository.findByQuestionId(questionId);
 
         String userCode = requestDto.getInput();
         log.info("userCode : " + userCode);
@@ -66,55 +58,17 @@ public class AnswerCheckService {
         File dir = new File(String.format("/home/ubuntu/onlineJudge/" + dirName));
         boolean isPassed = false;
         StringBuffer errorLog = new StringBuffer(); // thread-safe
-        // StringBuilder sb = new StringBuilder();
-        // String DBinput = "";
-        // List<String> DBinputList = new ArrayList<>();
         String line = "";
-        // String answer = "";
-        // List<String> answerList = new ArrayList<>();
-        // StringBuilder asb = new StringBuilder();
-
 
         // Create the userfile
         log.info("Create the userfile");
         try {
-            boolean dirCreate = dir.mkdir();
-            log.info("directory Create : " + dirCreate);
+            Files.createDirectories(Paths.get("/home/ubuntu/onlineJudge/" + dirName));
             userFile.createNewFile();
-            FileWriter fw = new FileWriter(userFile);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(userCode);
-            bw.close();
+            Files.writeString(Paths.get(filePath), userCode);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // // gets input value from input_output database with the question_id parameter
-        // String query = "SELECT * FROM input_output WHERE question_id = ?";
-
-        // // Connect to the database
-        // try (
-        //         Connection conn = DriverManager.getConnection(url, user, password);
-        //         // Execute a query to get the contents of the database
-        //         PreparedStatement stmt = conn.prepareStatement(query)) {
-
-        //     stmt.setLong(1, questionId);
-
-        //     ResultSet rs = stmt.executeQuery();
-        //     while (rs.next()) {
-        //         sb.append(rs.getString("input"));
-        //         DBinput = sb.toString();
-        //         sb.setLength(0); // sb reset
-        //         DBinputList.add(DBinput);
-        //     }
-
-        //     // Close the database connection
-        //     rs.close();
-        //     stmt.close();
-        //     conn.close();
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
 
         try {
             // chmod the file
@@ -153,11 +107,6 @@ public class AnswerCheckService {
             try (InputStream inputStream = process.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));) {
 
-                // asb.append(inputOutput.get(i).getOutput());
-                // answer = asb.toString();
-                // asb.setLength(0); // asb reset
-                // answerList.add(answer);
-
                 if (errorLog.length() == 0) {
                     isPassed = true;
                 }
@@ -173,9 +122,7 @@ public class AnswerCheckService {
                         break;
                     }
 
-                }
-
-                
+                }    
                 
                 // Wait for the process to complete and check the exit value
                 log.info("Wait for the process to complete and check the exit value");
