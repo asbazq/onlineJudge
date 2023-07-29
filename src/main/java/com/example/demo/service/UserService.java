@@ -30,8 +30,12 @@ public class UserService {
     private final RedisUtil redisUtil;
 
     public void join(UserRequestDto dto) {
-        Users users = new Users(dto.getUsername(), passwordEncoder.encode(dto.getPassword()), dto.getEmail(),
+        Users userCheck = usersRepository.findByUsername(dto.getUsername()).orElseThrow(
+                () -> new CustomException(ErrorCode.DUPLICATE_USERNAME));
+            
+        Users users = new Users(userCheck.getUsername(), passwordEncoder.encode(dto.getPassword()), dto.getEmail(),
                 Role.ROLE_USERS);
+
         usersRepository.save(users);
     }
 
