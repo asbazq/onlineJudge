@@ -57,6 +57,10 @@ public class Question extends BaseEntity {
     @JoinColumn(name = "problemHistroy_id")
     private ProblemHistory problemHistory;
 
+    @OneToMany(mappedBy = "question")
+    private ExecutedCode executedCode;
+    
+
     public Question(Long id, String title, String content, String restrictions, String example, Users users) {
         this.id = id;
         this.title = title;

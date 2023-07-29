@@ -47,6 +47,9 @@ public class Users extends BaseEntity {
     @OneToMany(mappedBy = "users")
     private List<Question> question;
 
+    @OneToMany(mappedBy = "users")
+    private ExecutedCode executedCode;
+
     public Users(String username, String password, String emaill, Role role) {
         this.username = username;
         this.password = password;
