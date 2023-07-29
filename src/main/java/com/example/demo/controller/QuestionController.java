@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.AllQuestionResponseDto;
 import com.example.demo.dto.QuestionRequestDto;
@@ -60,22 +61,11 @@ public class QuestionController {
     }
 
     // 문제 전체 조회
-    // @GetMapping("api/questions")
-    // public ResponseEntity<List<AllQuestionResponseDto>>
-    // getquestions(@RequestParam int page,
-    // @RequestParam int size,
-    // @RequestParam String sortby) {
-    // List<AllQuestionResponseDto> dtos = questionService.getquestions(page, size,
-    // sortby);
-
-    // return ResponseEntity.status(HttpStatus.OK)
-    // .body(dtos);
-    // }
-
-    // 문제 전체 조회
     @GetMapping("api/question")
-    public ResponseEntity<List<AllQuestionResponseDto>> getquestions() {
-        List<AllQuestionResponseDto> dtos = questionService.getquestions();
+    public ResponseEntity<List<AllQuestionResponseDto>> getquestions(@RequestParam int page,
+                                                                    @RequestParam int size,
+                                                                    @RequestParam String sortby) {
+        List<AllQuestionResponseDto> dtos = questionService.getquestions(page, size,sortby);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(dtos);
     }
