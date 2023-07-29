@@ -1,11 +1,22 @@
 package com.example.demo.Exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 
-public class CustomException extends RuntimeException{
-    private final com.example.demo.Exception.ErrorCode errorCode;
+
+public class CustomException extends RuntimeException {
+    private ErrorCode errorCode;
+
+    public CustomException(ErrorCode errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public CustomException(ErrorCode errorCode, String message) {
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
 }
