@@ -46,7 +46,7 @@ java, c, python 여러 언어들의 코딩테스트를 할 수있는
     <td colspan="2">Back-End</td>
   </tr>
   <tr>
-    <td>함형우</td>
+    <td>[함형우](https://github.com/amugae568)</td>
     <td>장정훈</td>
   </tr>
   <tr>
