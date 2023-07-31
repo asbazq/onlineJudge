@@ -32,5 +32,5 @@ public class ExecutedCode extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private String users;
+    private Users users;
 }

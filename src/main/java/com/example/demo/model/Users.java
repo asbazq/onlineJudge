@@ -48,7 +48,7 @@ public class Users extends BaseEntity {
     private List<Question> question;
 
     @OneToMany(mappedBy = "users")
-    private ExecutedCode executedCode;
+    private List<ExecutedCode> executedCode;
 
     public Users(String username, String password, String emaill, Role role) {
         this.username = username;

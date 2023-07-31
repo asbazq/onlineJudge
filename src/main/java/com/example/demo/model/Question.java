@@ -58,7 +58,7 @@ public class Question extends BaseEntity {
     private ProblemHistory problemHistory;
 
     @OneToMany(mappedBy = "question")
-    private ExecutedCode executedCode;
+    private List<ExecutedCode> executedCode;
     
 
     public Question(Long id, String title, String content, String restrictions, String example, Users users) {

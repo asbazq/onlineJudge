@@ -15,7 +15,7 @@ import java.util.List;
 public interface ExecutedCodeRepository extends JpaRepository<ExecutedCode, Long> {
     List<ExecutedCode> findByQuestionAndUsersAndCode(Long question, String users, int code);
 
-    @Modifying
-    @Query("DELETE FROM ExecutedCode ec WHERE ec.createAt < :expirationDate")
+    @Modifying // 데이터베이스의 상태를 변경하는 메서드에만 사용, SELECT 쿼리에는 @Query 어노테이션만 사용
+    @Query("DELETE FROM ExecutedCode ec WHERE ec.createdAt < :expirationDate")
     void dedeleteByCreateAtBefore(@Param("expirationDate") LocalDateTime expirationDate);
 }

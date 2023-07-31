@@ -188,7 +188,7 @@ public class AnswerCheckService {
                     .code(hashCode)
                     .result("Test Success")
                     .question(question)
-                    .users(users.getUsername())
+                    .users(users)
                     .build();
 
             executedCodeRepository.save(executedCode);
@@ -203,7 +203,7 @@ public class AnswerCheckService {
                 .code(hashCode)
                 .result("Test Failed ErrorLog : \n" + errorLog.toString())
                 .question(question)
-                .users(users.getUsername())
+                .users(users)
                 .build();
 
         executedCodeRepository.save(executedCode);

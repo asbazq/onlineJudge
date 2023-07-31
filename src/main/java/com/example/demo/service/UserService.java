@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,10 +31,12 @@ public class UserService {
     private final RedisUtil redisUtil;
 
     public void join(UserRequestDto dto) {
-        Users userCheck = usersRepository.findByUsername(dto.getUsername()).orElseThrow(
-                () -> new CustomException(ErrorCode.DUPLICATE_USERNAME));
+        Optional<Users> userCheck = usersRepository.findByUsername(dto.getUsername());
+        if (userCheck.isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+        }
             
-        Users users = new Users(userCheck.getUsername(), passwordEncoder.encode(dto.getPassword()), dto.getEmail(),
+        Users users = new Users(dto.getUsername(), passwordEncoder.encode(dto.getPassword()), dto.getEmail(),
                 Role.ROLE_USERS);
 
         usersRepository.save(users);
