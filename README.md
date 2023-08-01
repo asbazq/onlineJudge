@@ -73,6 +73,8 @@ java, c, python 여러 언어들의 코딩테스트를 할 수있는
 - 제목과 내용으로 검색할 수 있어 편리해요!
 #### 😃 코딩 테스트를 성공한 코드
 - 역대 해당 문제를 성공한 코드를 볼 수 있어요!
+#### 😃 이전에 실행한 코드 
+- 이전에 실행한 코드라면 코드를 다시 실행하지 않고 이전의 결과값을 출력해요!
 
 <br>
 
@@ -106,4 +108,4 @@ java, c, python 여러 언어들의 코딩테스트를 할 수있는
 
 
 ## 📃 ERD
-![image](https://user-images.githubusercontent.com/107836678/233852965-d9f508eb-c26e-44f7-a004-54bb6d14544a.png)
+![image](https://github.com/asbazq/onlineJudge/assets/107836678/68d04c9d-4670-4c4f-8976-084dcc21d0d5)
