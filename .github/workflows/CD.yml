@@ -65,9 +65,9 @@ jobs:
       - name: Deploy
         run: |
           aws deploy create-deployment \
-          --application-name onlineJudge \
+          --application-name judge_cicd \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --deployment-group-name cicd-prod \
+          --deployment-group-name judge_grop \
           --file-exists-behavior OVERWRITE \
           --s3-location bucket=last-project,bundleType=zip,key=onlineJudge/$GITHUB_SHA.zip \
           --region ap-northeast-2 \
