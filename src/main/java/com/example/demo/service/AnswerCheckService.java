@@ -58,6 +58,7 @@ public class AnswerCheckService {
         String userCode = requestDto.getInput();
         log.info("userCode : " + userCode);
         int hashCode = userCode.hashCode();
+        log.info("userCode hashing : " + hashCode);
         String dirName = Integer.toString(hashCode);
 
         // if the code has been executed before, the previous log output 
