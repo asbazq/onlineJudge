@@ -109,3 +109,8 @@ java, c, python 여러 언어들의 코딩테스트를 할 수있는
 
 ## 📃 ERD
 ![image](https://github.com/asbazq/onlineJudge/assets/107836678/68d04c9d-4670-4c4f-8976-084dcc21d0d5)
+
+## CI/CD
+![image](https://github.com/asbazq/onlineJudge/assets/107836678/35936fe3-46bb-4123-a530-25c36f2d41c0)
+- CI/CD를 통해 빌드/테스트 및 배포를 자동화하여 관련 시간을 줄일 수 있었습니다.
+
