@@ -12,11 +12,13 @@ import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ExecutedCode extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
