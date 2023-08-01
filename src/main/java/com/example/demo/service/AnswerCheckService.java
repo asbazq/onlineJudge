@@ -61,8 +61,8 @@ public class AnswerCheckService {
         String dirName = Integer.toString(hashCode);
 
         // if the code has been executed before, the previous log output 
-        List<ExecutedCode> executedCodes = executedCodeRepository.findByQuestionAndUsersAndCode(questionId,
-                users.getUsername(), hashCode);
+        List<ExecutedCode> executedCodes = executedCodeRepository.findByQuestionAndUsersAndCode(question,
+                users, hashCode);
         if (!executedCodes.isEmpty()) {
             return executedCodes.get(0).getResult();
         }

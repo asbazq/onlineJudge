@@ -10,11 +10,14 @@ import io.lettuce.core.dynamic.annotation.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import com.example.demo.model.Question;
+import com.example.demo.model.Users;
+
 
 
 public interface ExecutedCodeRepository extends JpaRepository<ExecutedCode, Long> {
-    List<ExecutedCode> findByQuestionAndUsersAndCode(Long question, String users, int code);
-
+    List<ExecutedCode> findByQuestionAndUsersAndCode(Question question, Users users, int code);
+    
     @Modifying // 데이터베이스의 상태를 변경하는 메서드에만 사용, SELECT 쿼리에는 @Query 어노테이션만 사용
     @Query("DELETE FROM ExecutedCode ec WHERE ec.createdAt < :expirationDate")
     void dedeleteByCreateAtBefore(@Param("expirationDate") LocalDateTime expirationDate);
