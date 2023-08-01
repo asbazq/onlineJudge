@@ -108,4 +108,4 @@ java, c, python 여러 언어들의 코딩테스트를 할 수있는
 
 
 ## 📃 ERD
-![image](https://user-images.githubusercontent.com/107836678/233852965-d9f508eb-c26e-44f7-a004-54bb6d14544a.png)
+![image](https://github.com/asbazq/onlineJudge/assets/107836678/68d04c9d-4670-4c4f-8976-084dcc21d0d5)
