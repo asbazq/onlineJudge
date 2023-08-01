@@ -9,12 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Entity
 @Builder
+@AllArgsConstructor
 public class ExecutedCode extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
