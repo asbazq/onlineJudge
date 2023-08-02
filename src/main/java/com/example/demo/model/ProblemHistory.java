@@ -21,15 +21,13 @@ public class ProblemHistory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Builder.Default
     @OneToMany(mappedBy = "problemHistory")
     @Column(name = "users_id")
-    private List<Users> users = new ArrayList<>();
+    private Users users;
 
     @Column
     private String code;
 
-    @Builder.Default
     @OneToMany(mappedBy = "problemHistory")
-    private List<Question> question = new ArrayList<>();
+    private Question question;
 }

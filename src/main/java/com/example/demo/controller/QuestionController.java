@@ -19,6 +19,7 @@ import com.example.demo.dto.QuestionResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.service.QuestionService;
 import com.example.demo.dto.IORequestDto;
+import com.example.demo.dto.ProblemHistoryDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -65,9 +66,15 @@ public class QuestionController {
     public ResponseEntity<List<AllQuestionResponseDto>> getquestions(@RequestParam int page,
                                                                     @RequestParam int size,
                                                                     @RequestParam String sortby) {
-        List<AllQuestionResponseDto> dtos = questionService.getquestions(page, size,sortby);
+        List<AllQuestionResponseDto> dtos = questionService.getquestions(page, size, sortby);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(dtos);
+    }
+    
+    @GetMapping("api/question/{id}/history")
+    public ResponseEntity<List<ProblemHistoryDto>> getQuestionHistory(@PathVariable Long id) {
+        List<ProblemHistoryDto> dto = questionService.getQuestionHistory(id);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
 }

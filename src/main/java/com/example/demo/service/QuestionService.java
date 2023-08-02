@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,13 +18,16 @@ import com.example.demo.dto.AllQuestionResponseDto;
 import com.example.demo.dto.QuestionRequestDto;
 import com.example.demo.dto.QuestionResponseDto;
 import com.example.demo.dto.IORequestDto;
+import com.example.demo.dto.ProblemHistoryDto;
 import com.example.demo.model.Question;
 import com.example.demo.repository.InputOutputRepository;
+import com.example.demo.repository.ProblemHistoryRepository;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.security.UserDetailsImpl;
 
 
 import com.example.demo.model.InputOutput;
+import com.example.demo.model.ProblemHistory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +39,7 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final InputOutputRepository inputOutputRepository;
+    private final ProblemHistoryRepository problemHistoryRepository;
 
     // 문제 작성
     public void createQuestion(QuestionRequestDto requestDto, UserDetailsImpl userDetailsImpl) {
@@ -72,7 +77,8 @@ public class QuestionService {
     // 문제 상세 조회
     public QuestionResponseDto getQuestion(Long id) {
         Question question = questionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND)
+        );
         return new QuestionResponseDto(question);
     }
 
@@ -103,5 +109,21 @@ public class QuestionService {
             log.info("삭제 수행시간 >> {}", stopWatch.getTotalTimeSeconds());
             throw new CustomException(ErrorCode.INVALID_AUTHORITY);
         }
+    }
+
+    // 성공한 문제 조회
+    public List<ProblemHistoryDto> getQuestionHistory(Long id) {
+        Question question = questionRepository.findById(id).orElseThrow(
+            ()-> new CustomException(ErrorCode.BOARD_NOT_FOUND)
+        );
+
+        List<ProblemHistory> problemHistory = problemHistoryRepository.findByQuestion(question);
+        List<ProblemHistoryDto> dtos = new ArrayList<>();
+        for (ProblemHistory pHistory : problemHistory) {
+            ProblemHistoryDto dto = new ProblemHistoryDto(pHistory);
+            dtos.add(dto);
+        }
+
+        return dtos;
     }
 }
