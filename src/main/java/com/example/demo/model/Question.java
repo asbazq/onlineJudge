@@ -53,9 +53,8 @@ public class Question extends BaseEntity {
     @JoinColumn(name = "users_id")
     private Users users;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "problemHistroy_id")
-    private ProblemHistory problemHistory;
+    @OneToMany(mappedBy = "question")
+    private List<ProblemHistory> problemHistory;
 
     @OneToMany(mappedBy = "question")
     private List<ExecutedCode> executedCode;
