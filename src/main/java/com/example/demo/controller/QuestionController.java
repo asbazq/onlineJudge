@@ -65,12 +65,13 @@ public class QuestionController {
     @GetMapping("api/question")
     public ResponseEntity<List<AllQuestionResponseDto>> getquestions(@RequestParam int page,
                                                                     @RequestParam int size,
-                                                                    @RequestParam String sortby) {
+            @RequestParam String sortby) {
         List<AllQuestionResponseDto> dtos = questionService.getquestions(page, size, sortby);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(dtos);
     }
     
+    // 푼 문제 조회
     @GetMapping("api/question/{id}/history")
     public ResponseEntity<List<ProblemHistoryDto>> getQuestionHistory(@PathVariable Long id) {
         List<ProblemHistoryDto> dto = questionService.getQuestionHistory(id);
