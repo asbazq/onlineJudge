@@ -171,15 +171,11 @@ public class AnswerCheckService {
 
         if (isPassed) {
             // if ispassed is true, the usercode is stored in the problemHistory
-            List<Question> qList = new ArrayList<>();
-            qList.add(question);
-            List<Users> uList = new ArrayList<>();
-            uList.add(userDetailsImpl.getUsers());
 
             ProblemHistory problemHistory = ProblemHistory.builder()
                     .code(userCode)
-                    .question(qList)
-                    .users(uList)
+                    .question(question)
+                    .users(users)
                     .build();
 
             problemHistoryRepository.save(problemHistory);
