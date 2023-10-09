@@ -56,4 +56,9 @@ public class Users extends BaseEntity {
         this.email = emaill;
         this.role = role;
     }
+
+    // testCode 용
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

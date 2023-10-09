@@ -68,4 +68,17 @@ public class Question extends BaseEntity {
         this.example = example;
         this.users = users;
     }
+
+    // testCode 용
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
 }

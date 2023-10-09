@@ -35,4 +35,10 @@ public class ProblemHistory extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
+
+    //testCode 용
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+    
 }
