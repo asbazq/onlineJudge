@@ -40,5 +40,9 @@ public class ProblemHistory extends BaseEntity {
     public void setUsers(Users users) {
         this.users = users;
     }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
     
 }

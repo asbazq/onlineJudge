@@ -16,7 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +44,8 @@ public class QuestionServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        // @Mock와 @InjectMocks이 붙은 필드를 인식, Mockito가 목 객체를 초기화하고 필드에 할당
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -72,6 +76,8 @@ public class QuestionServiceTest {
         requestDto.setInput("Sample Input");
         requestDto.setOutput("Sample Output");
 
+        // Question 객체를 생성하고 questionRepository.findById(questionId)가 호출될 때 이 객체를 반환
+        // 실제 데이터베이스에 접근하지 않고 모의(Mock) 객체를 사용
         Question question = new Question();
         when(questionRepository.findById(questionId)).thenReturn(Optional.of(question));
 
@@ -105,17 +111,33 @@ public class QuestionServiceTest {
         int page = 1;
         int size = 10;
         String sortby = "title";
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, sortby));
+        List<Question> fakeQuestions = new ArrayList<>();
+        // 가짜 질문 데이터 생성
+        for (int i = 1; i <= size; i++) {
+            Question question = new Question();
+            question.setTitle("Question " + i);
+            fakeQuestions.add(question);
+        }
 
-        Page<Question> questionPage = mock(Page.class);
-        when(questionPage.stream()).thenReturn(new ArrayList<Question>().stream());
-        when(questionRepository.findAll(any(Pageable.class))).thenReturn(questionPage);
+        Page<Question> fakeQuestionPage = new PageImpl<>(fakeQuestions, pageable, fakeQuestions.size());
 
-        // 테스트할 메서드 호출
-        List<AllQuestionResponseDto> responseDtos = questionService.getquestions(page, size, sortby);
+        // 목(Mock) 설정
+        when(questionRepository.findAll(pageable)).thenReturn(fakeQuestionPage);
+
+        // 테스트 메서드 호출
+        List<AllQuestionResponseDto> result = questionService.getquestions(page, size, sortby);
 
         // 결과 검증
-        assert responseDtos.isEmpty();
+        // 페이지 크기와 결과 크기가 일치하는지 확인
+        assert result.size() == size;
+
+        // 결과 데이터가 예상과 일치하는지 확인
+        assert result.get(0).getTitle().equals("Question 1");
+        assert result.get(1).getTitle().equals("Question 2");
+        assert result.get(2).getTitle().equals("Question 3");
     }
+    
 
     @Test
     public void testDeleteque() {
@@ -146,6 +168,7 @@ public class QuestionServiceTest {
         ProblemHistory problemHistory = new ProblemHistory();
         Users users = new Users("test", "1234", "test@test.com", Role.ROLE_ADMIN);
         problemHistory.setUsers(users);
+        problemHistory.setCode("test code");
         List<ProblemHistory> problemHistories = new ArrayList<>();
         problemHistories.add(problemHistory);
         when(problemHistoryRepository.findByQuestion(question)).thenReturn(problemHistories);
@@ -155,5 +178,6 @@ public class QuestionServiceTest {
 
         // 결과 검증
         assert !dtos.isEmpty();
+        assert dtos.get(0).getCode().equals("test code");
     }
 }
