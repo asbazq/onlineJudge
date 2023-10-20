@@ -81,9 +81,7 @@ java, c, python 여러 언어들의 코딩테스트를 할 수있는
 - 제목과 내용으로 검색 가능
 #### 😃 테스트 코드 작성
 - mock과 Junit을 통한 테스트 코드로 코드의 추가 변경 시 미치는 영향을 빠르게 파악 가능
-#### 😃 CI/CD 구축
-- GitHub Actions를 사용하여 CI/CD 워크플로를 만들고 AWS CodeDeploy를 사용하여 Amazon EC2 인스턴스에 Java SpringBoot 애플리케이션을 배포
-- GitHub Actions는 클라우드가 있으므로, 별도 설치 필요없어 사용에 용이하기도 하고 기존 사용하고 있던 GitHub와 하나로 통일된 환경에서 CI 수행이 가능하기에 github Actions를 사용.
+
 
 
 <br>
@@ -121,6 +119,12 @@ java, c, python 여러 언어들의 코딩테스트를 할 수있는
   <br>👉이 때 코드가 전체 사용자에서 겹칠 경우는 거의 없다고 판단되어 각 사용자 당 실행한 코드를 판별하여 서치시간을 줄임
   <br>👉실행했던 코드는 하루 뒤 삭제하여 메모리를 아낌
 
+## CI/CD
+![image](https://github.com/asbazq/onlineJudge/assets/107836678/35936fe3-46bb-4123-a530-25c36f2d41c0)
+- CI/CD를 통해 빌드/테스트 및 배포를 자동화하여 관련 시간을 줄일 수 있었습니다.
+  - GitHub Actions를 사용하여 CI/CD 워크플로를 만들고 AWS CodeDeploy를 사용하여 Amazon EC2 인스턴스에 Java SpringBoot 애플리케이션을 배포하였습니다.
+  - GitHub Actions는 클라우드가 있으므로, 별도 설치 필요없어 사용에 용이하기도 하고 기존 사용하고 있던 GitHub와 하나로 통일된 환경에서 CI 수행이 가능하기에 github Actions를 사용하였습니다.
+
 
 
 
@@ -128,10 +132,4 @@ java, c, python 여러 언어들의 코딩테스트를 할 수있는
 ## 📃 ERD
 ![image](https://github.com/asbazq/onlineJudge/assets/107836678/652c171a-ee38-4afa-b8e9-1063cdc83512)
 
-
-## CI/CD
-![image](https://github.com/asbazq/onlineJudge/assets/107836678/35936fe3-46bb-4123-a530-25c36f2d41c0)
-- CI/CD를 통해 빌드/테스트 및 배포를 자동화하여 관련 시간을 줄일 수 있었습니다.
-  - GitHub Actions를 사용하여 CI/CD 워크플로를 만들고 AWS CodeDeploy를 사용하여 Amazon EC2 인스턴스에 Java SpringBoot 애플리케이션을 배포하였습니다.
-  - GitHub Actions는 클라우드가 있으므로, 별도 설치 필요없어 사용에 용이하기도 하고 기존 사용하고 있던 GitHub와 하나로 통일된 환경에서 CI 수행이 가능하기에 github Actions를 사용하였습니다.
 
