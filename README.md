@@ -55,14 +55,6 @@ java, c, python 여러 언어들의 코딩테스트를 할 수있는
 </table>
 
 
-#### 🔗 link
-
-- [시연영상]()
-- [Team notion]()
-- [Github Back-End repo](https://github.com/asbazq/onlineJudge)
-- [Github Front-End repo](https://github.com/asbazq/reactapp)
-<br>
-
 ## 🚀 주요 작업 및 기능
 #### 😃 안전하고 간편한 로그인과 회원가입
 - JWT를 이용한 로그인으로 간단하고 안전하게 로그인
